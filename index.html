@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>판타지 레전드</title>
+    <title>RPG 어드벤처 게임</title>
     <style>
         * {
             margin: 0;
@@ -740,5 +740,604 @@
         };
 
         const monsters = [
-            { name: '슬라임', hp: 30, attack
+            { name: '슬라임', hp: 30, attack: 8, exp: 15, gold: 10, emoji: '💧' },
+            { name: '고블린', hp: 50, attack: 12, exp: 25, gold: 20, emoji: '👹' },
+            { name: '오크', hp: 80, attack: 18, exp: 40, gold: 35, emoji: '👺' },
+            { name: '스켈레톤', hp: 70, attack: 15, exp: 35, gold: 30, emoji: '💀' },
+            { name: '늑대', hp: 60, attack: 14, exp: 30, gold: 25, emoji: '🐺' },
+            { name: '거미', hp: 45, attack: 10, exp: 20, gold: 15, emoji: '🕷️' },
+            { name: '박쥐', hp: 25, attack: 6, exp: 12, gold: 8, emoji: '🦇' },
+            { name: '드래곤', hp: 200, attack: 35, exp: 100, gold: 100, emoji: '🐲' }
+        ];
 
+        // 상점 아이템 정의
+        const shopItems = [
+            {
+                id: 'health_potion',
+                name: '체력 물약',
+                emoji: '🧪',
+                price: 30,
+                description: '체력을 50 회복합니다',
+                category: 'potion',
+                effect: (user) => {
+                    const heal = 50;
+                    user.currentHP = Math.min(user.maxHP, user.currentHP + heal);
+                    return `❤️ 체력이 ${heal} 회복되었습니다!`;
+                }
+            },
+            {
+                id: 'mana_potion',
+                name: '마나 물약',
+                emoji: '🔮',
+                price: 25,
+                description: '마나를 40 회복합니다',
+                category: 'potion',
+                effect: (user) => {
+                    const mana = 40;
+                    user.currentMP = Math.min(user.maxMP, user.currentMP + mana);
+                    return `⚡ 마나가 ${mana} 회복되었습니다!`;
+                }
+            },
+            {
+                id: 'exp_potion',
+                name: '경험치 물약',
+                emoji: '⭐',
+                price: 50,
+                description: '경험치를 30 획득합니다',
+                category: 'potion',
+                effect: (user) => {
+                    const exp = 30;
+                    user.experience += exp;
+                    return `⭐ 경험치를 ${exp} 획득했습니다!`;
+                }
+            },
+            {
+                id: 'iron_sword',
+                name: '철검',
+                emoji: '⚔️',
+                price: 80,
+                description: '공격력을 3 증가시킵니다',
+                category: 'weapon',
+                effect: (user) => {
+                    user.attack += 3;
+                    return `⚔️ 공격력이 3 증가했습니다! (현재: ${user.attack})`;
+                }
+            },
+            {
+                id: 'magic_staff',
+                name: '마법 지팡이',
+                emoji: '🪄',
+                price: 90,
+                description: '공격력 2와 마나 10을 증가시킵니다',
+                category: 'weapon',
+                effect: (user) => {
+                    user.attack += 2;
+                    user.maxMP += 10;
+                    user.currentMP += 10;
+                    return `🪄 공격력 +2, 최대 마나 +10 증가! (공격력: ${user.attack}, 마나: ${user.maxMP})`;
+                }
+            },
+            {
+                id: 'steel_armor',
+                name: '강철 갑옷',
+                emoji: '🛡️',
+                price: 100,
+                description: '방어력을 5 증가시킵니다',
+                category: 'armor',
+                effect: (user) => {
+                    user.defense += 5;
+                    return `🛡️ 방어력이 5 증가했습니다! (현재: ${user.defense})`;
+                }
+            },
+            {
+                id: 'leather_boots',
+                name: '가죽 부츠',
+                emoji: '👢',
+                price: 60,
+                description: '방어력 2와 체력 20을 증가시킵니다',
+                category: 'armor',
+                effect: (user) => {
+                    user.defense += 2;
+                    user.maxHP += 20;
+                    user.currentHP += 20;
+                    return `👢 방어력 +2, 최대 체력 +20 증가! (방어력: ${user.defense}, 체력: ${user.maxHP})`;
+                }
+            },
+            {
+                id: 'magic_ring',
+                name: '마법 반지',
+                emoji: '💍',
+                price: 120,
+                description: '모든 능력치를 2씩 증가시킵니다',
+                category: 'accessory',
+                effect: (user) => {
+                    user.attack += 2;
+                    user.defense += 2;
+                    user.maxHP += 15;
+                    user.maxMP += 15;
+                    user.currentHP = Math.min(user.maxHP, user.currentHP + 15);
+                    user.currentMP = Math.min(user.maxMP, user.currentMP + 15);
+                    return `💍 모든 능력치가 향상되었습니다! 공격력 +2, 방어력 +2, 체력 +15, 마나 +15`;
+                }
+            },
+            {
+                id: 'elixir',
+                name: '만능 비약',
+                emoji: '🍺',
+                price: 200,
+                description: '체력과 마나를 완전히 회복하고 경험치 50을 획득합니다',
+                category: 'special',
+                effect: (user) => {
+                    user.currentHP = user.maxHP;
+                    user.currentMP = user.maxMP;
+                    user.experience += 50;
+                    return `🍺 완전히 회복되었고 경험치 50을 획득했습니다!`;
+                }
+            }
+        ];
+
+        function showSignup() {
+            document.getElementById('signupForm').style.display = 'block';
+            document.getElementById('loginForm').style.display = 'none';
+            clearErrors();
+        }
+
+        function showLogin() {
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('signupForm').style.display = 'none';
+            clearErrors();
+        }
+
+        function clearErrors() {
+            document.getElementById('signupError').style.display = 'none';
+            document.getElementById('loginError').style.display = 'none';
+        }
+
+        function signup() {
+            const username = document.getElementById('signupUsername').value.trim();
+            const password = document.getElementById('signupPassword').value.trim();
+            const characterClass = document.getElementById('characterClass').value;
+
+            if (!username || !password) {
+                showError('signupError', '영웅의 이름과 비밀 주문을 모두 입력해주세요! ⚠️');
+                return;
+            }
+
+            if (username.length < 2) {
+                showError('signupError', '영웅의 이름은 최소 2글자 이상이어야 합니다! 📝');
+                return;
+            }
+
+            if (password.length < 4) {
+                showError('signupError', '비밀 주문은 최소 4자 이상이어야 합니다! 🔐');
+                return;
+            }
+
+            if (users[username]) {
+                showError('signupError', '이미 존재하는 영웅 이름입니다! 다른 이름을 선택해주세요. 🚫');
+                return;
+            }
+
+            // 새 사용자 생성
+            const baseStats = classStats[characterClass];
+            users[username] = {
+                password: password,
+                characterClass: characterClass,
+                level: 1,
+                experience: 0,
+                maxHP: baseStats.hp,
+                currentHP: baseStats.hp,
+                maxMP: baseStats.mp,
+                currentMP: baseStats.mp,
+                attack: baseStats.attack,
+                defense: baseStats.defense,
+                skill: baseStats.skill,
+                gold: 50,
+                victories: 0,
+                inventory: [],
+                createdAt: Date.now()
+            };
+
+            alert('🎉 영웅 등록이 완료되었습니다! 이제 모험을 시작하세요!');
+            showLogin();
+            document.getElementById('loginUsername').value = username;
+        }
+
+        function login() {
+            const username = document.getElementById('loginUsername').value.trim();
+            const password = document.getElementById('loginPassword').value.trim();
+
+            if (!username || !password) {
+                showError('loginError', '영웅의 이름과 비밀 주문을 모두 입력해주세요! ⚠️');
+                return;
+            }
+
+            if (!users[username] || users[username].password !== password) {
+                showError('loginError', '잘못된 영웅 이름 또는 비밀 주문입니다! 🚫');
+                return;
+            }
+
+            currentUser = username;
+            startGame();
+        }
+
+        function logout() {
+            if (confirm('🤔 정말로 모험을 종료하시겠습니까?')) {
+                currentUser = null;
+                document.getElementById('gameContainer').style.display = 'none';
+                closeShop();
+                showLogin();
+                document.getElementById('loginUsername').value = '';
+                document.getElementById('loginPassword').value = '';
+            }
+        }
+
+        function saveGame() {
+            addBattleLog('💾 게임이 저장되었습니다! (브라우저 메모리에 자동 저장됨)');
+        }
+
+        function startGame() {
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('gameContainer').style.display = 'block';
+
+            const user = users[currentUser];
+            const className = classNames[user.characterClass];
+            const classEmoji = classStats[user.characterClass].emoji;
+            
+            document.getElementById('welcomeMessage').innerHTML = 
+                `환영합니다, <strong>${currentUser}</strong>님! 🌟<br>
+                ${classEmoji} ${className} (레벨 ${user.level})`;
+            
+            updateGameUI();
+            addBattleLog(`${classEmoji} ${currentUser}님이 ${className}로 모험에 참가했습니다!`);
+        }
+
+        function updateGameUI() {
+            const user = users[currentUser];
+            
+            // 기본 스탯 업데이트
+            document.getElementById('currentHP').textContent = user.currentHP;
+            document.getElementById('currentMP').textContent = user.currentMP;
+            document.getElementById('level').textContent = user.level;
+            document.getElementById('experience').textContent = user.experience;
+            document.getElementById('gold').textContent = user.gold || 50;
+            document.getElementById('victories').textContent = user.victories || 0;
+
+            // 텍스트 업데이트
+            document.getElementById('hpText').textContent = `${user.currentHP}/${user.maxHP}`;
+            document.getElementById('mpText').textContent = `${user.currentMP}/${user.maxMP}`;
+            document.getElementById('expText').textContent = `${user.experience}/${user.level * 100}`;
+
+            // 진행바 업데이트
+            const hpPercent = Math.max(0, (user.currentHP / user.maxHP) * 100);
+            const mpPercent = Math.max(0, (user.currentMP / user.maxMP) * 100);
+            const expPercent = Math.max(0, (user.experience % (user.level * 100)) / (user.level * 100) * 100);
+
+            document.getElementById('hpBar').style.width = hpPercent + '%';
+            document.getElementById('mpBar').style.width = mpPercent + '%';
+            document.getElementById('expBar').style.width = expPercent + '%';
+        }
+
+        function hunt() {
+            const user = users[currentUser];
+            
+            if (user.currentHP <= 0) {
+                addBattleLog('💀 체력이 0입니다! 여관에서 휴식을 취하세요.');
+                return;
+            }
+
+            // 레벨에 따른 몬스터 선택
+            let availableMonsters = monsters.filter(monster => {
+                if (user.level <= 3) return monster.name !== '드래곤';
+                return true;
+            });
+
+            const monster = availableMonsters[Math.floor(Math.random() * availableMonsters.length)];
+            const monsterHP = monster.hp + Math.floor(Math.random() * 20) - 10;
+            
+            // 전투 시뮬레이션
+            const playerDamage = Math.floor(user.attack + Math.random() * 10) - Math.floor(monster.attack * 0.2);
+            const monsterDamage = Math.floor(monster.attack + Math.random() * 8) - Math.floor(user.defense * 0.3);
+            
+            const finalPlayerDamage = Math.max(1, playerDamage);
+            const finalMonsterDamage = Math.max(1, monsterDamage);
+            
+            user.currentHP = Math.max(0, user.currentHP - finalMonsterDamage);
+            
+            const victory = Math.random() > 0.3; // 70% 승률
+            
+            if (victory || user.currentHP === 0) {
+                const expGain = Math.floor(monster.exp * (0.8 + Math.random() * 0.4));
+                const goldGain = Math.floor(monster.gold * (0.8 + Math.random() * 0.4));
+                
+                user.experience += expGain;
+                user.gold = (user.gold || 50) + goldGain;
+                user.victories = (user.victories || 0) + 1;
+                
+                addBattleLog(`⚔️ ${monster.emoji} ${monster.name}을 물리쳤습니다! (피해: ${finalPlayerDamage}) 💰+${goldGain} ⭐+${expGain}`);
+                
+                if (user.currentHP === 0) {
+                    addBattleLog(`💀 하지만 치명상을 입었습니다! 체력: 0`);
+                }
+            } else {
+                addBattleLog(`💥 ${monster.emoji} ${monster.name}과의 전투에서 ${finalMonsterDamage}의 피해를 받았습니다.`);
+            }
+            
+            // 레벨업 체크
+            checkLevelUp();
+            updateGameUI();
+        }
+
+        function rest() {
+            const user = users[currentUser];
+            const cost = 20;
+            
+            if ((user.gold || 50) < cost) {
+                addBattleLog('💰 골드가 부족합니다! 몬스터를 사냥해서 골드를 얻으세요.');
+                return;
+            }
+            
+            const hpRecover = Math.floor(user.maxHP * 0.6);
+            const mpRecover = Math.floor(user.maxMP * 0.8);
+            
+            user.currentHP = Math.min(user.maxHP, user.currentHP + hpRecover);
+            user.currentMP = Math.min(user.maxMP, user.currentMP + mpRecover);
+            user.gold = Math.max(0, (user.gold || 50) - cost);
+            
+            addBattleLog(`🏨 여관에서 푹 쉬었습니다! 💰-${cost} ❤️+${hpRecover} ⚡+${mpRecover}`);
+            updateGameUI();
+        }
+
+        function useSkill() {
+            const user = users[currentUser];
+            const mpCost = 25;
+            
+            if (user.currentMP < mpCost) {
+                addBattleLog('⚡ 마나가 부족합니다! 휴식을 취하거나 마나 물약을 사용하세요.');
+                return;
+            }
+            
+            user.currentMP = Math.max(0, user.currentMP - mpCost);
+            const damage = Math.floor(user.attack * (2 + Math.random()));
+            const expGain = 20;
+            user.experience += expGain;
+            
+            addBattleLog(`✨ ${user.skill}을(를) 시전했습니다! 강력한 공격으로 ${damage}의 피해! ⚡-${mpCost} ⭐+${expGain}`);
+            
+            checkLevelUp();
+            updateGameUI();
+        }
+
+        function openShop() {
+            const user = users[currentUser];
+            document.getElementById('shopModal').style.display = 'block';
+            document.getElementById('shopGold').textContent = user.gold || 50;
+            
+            const shopContainer = document.getElementById('shopItems');
+            shopContainer.innerHTML = '';
+            
+            shopItems.forEach(item => {
+                const itemDiv = document.createElement('div');
+                itemDiv.className = 'shop-item';
+                
+                const canAfford = (user.gold || 50) >= item.price;
+                
+                itemDiv.innerHTML = `
+                    <div class="item-icon">${item.emoji}</div>
+                    <div class="item-name">${item.name}</div>
+                    <div class="item-description">${item.description}</div>
+                    <div class="item-price">💰 ${item.price} 골드</div>
+                    <button class="buy-btn" onclick="buyItem('${item.id}')" ${!canAfford ? 'disabled' : ''}>
+                        ${canAfford ? '구매하기' : '골드 부족'}
+                    </button>
+                `;
+                
+                shopContainer.appendChild(itemDiv);
+            });
+            
+            addBattleLog('🏪 신비한 상점에 입장했습니다! 필요한 아이템을 선택해보세요.');
+        }
+
+        function closeShop() {
+            document.getElementById('shopModal').style.display = 'none';
+        }
+
+        function buyItem(itemId) {
+            const user = users[currentUser];
+            const item = shopItems.find(i => i.id === itemId);
+            
+            if (!item) {
+                addBattleLog('❌ 아이템을 찾을 수 없습니다!');
+                return;
+            }
+            
+            if ((user.gold || 50) < item.price) {
+                addBattleLog(`💰 골드가 부족합니다! ${item.name} 가격: ${item.price} (보유: ${user.gold || 50})`);
+                return;
+            }
+            
+            // 골드 차감
+            user.gold = Math.max(0, (user.gold || 50) - item.price);
+            
+            // 아이템 효과 적용
+            const result = item.effect(user);
+            
+            // 인벤토리에 아이템 추가 (장비 아이템의 경우)
+            if (!user.inventory) user.inventory = [];
+            if (item.category !== 'potion' && item.category !== 'special') {
+                user.inventory.push(item.id);
+            }
+            
+            addBattleLog(`🛒 ${item.name}을(를) 구매했습니다! 💰-${item.price}`);
+            addBattleLog(result);
+            
+            checkLevelUp();
+            updateGameUI();
+            
+            // 상점 UI 새로고침
+            setTimeout(() => {
+                openShop();
+            }, 100);
+        }
+
+        // 이전 shop() 함수는 랜덤 상점으로 이름 변경
+        function shop() {
+            openShop();
+        }
+
+        function explore() {
+            const user = users[currentUser];
+            
+            if (user.currentHP < 30) {
+                addBattleLog('❤️ 체력이 너무 낮습니다! 던전 탐험은 위험해요.');
+                return;
+            }
+            
+            const events = [
+                { name: '보물 상자 발견', effect: () => {
+                    const gold = Math.floor(Math.random() * 50) + 20;
+                    user.gold = (user.gold || 50) + gold;
+                    return `💰 보물 상자에서 ${gold} 골드를 발견했습니다!`;
+                }},
+                { name: '신비한 샘물', effect: () => {
+                    const heal = Math.floor(user.maxHP * 0.3);
+                    user.currentHP = Math.min(user.maxHP, user.currentHP + heal);
+                    return `💧 신비한 샘물로 체력이 ${heal} 회복되었습니다!`;
+                }},
+                { name: '함정 발견', effect: () => {
+                    const damage = Math.floor(Math.random() * 20) + 10;
+                    user.currentHP = Math.max(0, user.currentHP - damage);
+                    return `⚠️ 함정에 걸려 ${damage}의 피해를 받았습니다!`;
+                }},
+                { name: '고대 유물 발견', effect: () => {
+                    const exp = Math.floor(Math.random() * 30) + 20;
+                    user.experience += exp;
+                    return `🏺 고대 유물을 연구해 ${exp} 경험치를 획득했습니다!`;
+                }}
+            ];
+            
+            const event = events[Math.floor(Math.random() * events.length)];
+            const result = event.effect();
+            
+            addBattleLog(`🗺️ 던전 탐험 중 ${event.name}!`);
+            addBattleLog(result);
+            
+            checkLevelUp();
+            updateGameUI();
+        }
+
+        function checkLevelUp() {
+            const user = users[currentUser];
+            const requiredExp = user.level * 100;
+            
+            if (user.experience >= requiredExp) {
+                user.level++;
+                user.experience = user.experience - requiredExp;
+                
+                // 레벨업 보너스
+                const hpBonus = Math.floor(Math.random() * 25) + 15;
+                const mpBonus = Math.floor(Math.random() * 20) + 10;
+                const attackBonus = Math.floor(Math.random() * 8) + 3;
+                const defenseBonus = Math.floor(Math.random() * 6) + 2;
+                
+                user.maxHP += hpBonus;
+                user.maxMP += mpBonus;
+                user.attack += attackBonus;
+                user.defense += defenseBonus;
+                user.currentHP = user.maxHP; // 레벨업 시 완전 회복
+                user.currentMP = user.maxMP;
+                
+                addBattleLog(`🎉 레벨 업! 레벨 ${user.level}이 되었습니다!`);
+                addBattleLog(`📈 능력치 증가: ❤️+${hpBonus} ⚡+${mpBonus} ⚔️+${attackBonus} 🛡️+${defenseBonus}`);
+                
+                // 레벨업 특별 효과
+                document.querySelector('.user-info').style.animation = 'none';
+                setTimeout(() => {
+                    document.querySelector('.user-info').style.animation = 'floating 3s ease-in-out infinite';
+                }, 10);
+            }
+        }
+
+        function showStats() {
+            const user = users[currentUser];
+            const className = classNames[user.characterClass];
+            const classEmoji = classStats[user.characterClass].emoji;
+            
+            addBattleLog(`📊 === ${currentUser}님의 영웅 정보 ===`);
+            addBattleLog(`${classEmoji} 직업: ${className} | 🌟 레벨: ${user.level}`);
+            addBattleLog(`❤️ 체력: ${user.currentHP}/${user.maxHP} | ⚡ 마나: ${user.currentMP}/${user.maxMP}`);
+            addBattleLog(`⚔️ 공격력: ${user.attack} | 🛡️ 방어력: ${user.defense}`);
+            addBattleLog(`⭐ 경험치: ${user.experience}/${user.level * 100} | 💰 골드: ${user.gold || 50}`);
+            addBattleLog(`🏆 승리 횟수: ${user.victories || 0} | ✨ 특수기: ${user.skill}`);
+            
+            if (user.inventory && user.inventory.length > 0) {
+                addBattleLog(`🎒 보유 장비: ${user.inventory.length}개`);
+            }
+        }
+
+        function addBattleLog(message) {
+            const battleLog = document.getElementById('battleLog');
+            const logEntry = document.createElement('div');
+            logEntry.className = 'log-entry';
+            logEntry.textContent = message;
+            
+            battleLog.appendChild(logEntry);
+            battleLog.scrollTop = battleLog.scrollHeight;
+            
+            // 로그가 너무 많아지면 오래된 것들 제거
+            const logEntries = battleLog.getElementsByClassName('log-entry');
+            if (logEntries.length > 15) {
+                battleLog.removeChild(logEntries[0]);
+            }
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+            
+            setTimeout(() => {
+                errorElement.style.display = 'none';
+            }, 4000);
+        }
+
+        // 모달 클릭 이벤트 (모달 외부 클릭시 닫기)
+        window.onclick = function(event) {
+            const modal = document.getElementById('shopModal');
+            if (event.target === modal) {
+                closeShop();
+            }
+        }
+
+        // 엔터키 이벤트 처리
+        document.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                if (document.getElementById('signupForm').style.display !== 'none') {
+                    signup();
+                } else if (document.getElementById('loginForm').style.display !== 'none') {
+                    login();
+                }
+            }
+        });
+
+        // ESC 키로 상점 닫기
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeShop();
+            }
+        });
+
+        // 게임 자동 저장 (30초마다)
+        setInterval(() => {
+            if (currentUser && users[currentUser]) {
+                // 자동 저장 로직 (실제로는 브라우저 메모리에 이미 저장되어 있음)
+                console.log('게임 자동 저장됨');
+            }
+        }, 30000);
+
+        // 초기화 메시지
+        console.log('🎮 RPG 어드벤처 게임이 로드되었습니다!');
+    </script>
+</body>
+</html>
