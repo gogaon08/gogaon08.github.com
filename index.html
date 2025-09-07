@@ -873,6 +873,33 @@
                     user.experience += 50;
                     return `🍺 완전히 회복되었고 경험치 50을 획득했습니다!`;
                 }
+            },
+            {
+                id: 'dragon_sword',
+                name: '드래곤 검',
+                emoji: '🗡️',
+                price: 300,
+                description: '전설적인 무기! 공격력을 10 크게 증가시킵니다',
+                category: 'legendary',
+                effect: (user) => {
+                    user.attack += 10;
+                    return `🗡️ 드래곤의 힘이 깃든 검! 공격력이 10 증가했습니다! (현재: ${user.attack})`;
+                }
+            },
+            {
+                id: 'phoenix_feather',
+                name: '불사조 깃털',
+                emoji: '🪶',
+                price: 250,
+                description: '최대 체력과 마나를 대폭 증가시키는 신비한 아이템',
+                category: 'legendary',
+                effect: (user) => {
+                    user.maxHP += 50;
+                    user.maxMP += 30;
+                    user.currentHP += 50;
+                    user.currentMP += 30;
+                    return `🪶 불사조의 축복! 최대 체력 +50, 최대 마나 +30 (체력: ${user.maxHP}, 마나: ${user.maxMP})`;
+                }
             }
         ];
 
