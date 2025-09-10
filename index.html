@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="ko" id="htmlLang">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -18,6 +18,43 @@
             color: #fff;
             position: relative;
             overflow-x: hidden;
+        }
+        
+        /* Language Switcher */
+        .language-switcher {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .lang-btn {
+            padding: 10px 16px;
+            border: none;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-size: 14px;
+            min-width: 60px;
+        }
+        
+        .lang-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: rgba(255, 215, 0, 0.5);
+            transform: translateY(-2px);
+        }
+        
+        .lang-btn.active {
+            background: linear-gradient(45deg, #ffd700, #ffed4a);
+            color: #333;
+            border-color: #ffd700;
         }
         
         /* 배경 애니메이션 */
@@ -606,6 +643,19 @@
                 padding: 10px;
             }
             
+            .language-switcher {
+                top: 10px;
+                right: 10px;
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .lang-btn {
+                padding: 8px 12px;
+                min-width: 50px;
+                font-size: 12px;
+            }
+            
             .auth-form {
                 padding: 25px;
                 margin: 20px auto;
@@ -656,31 +706,37 @@
     </style>
 </head>
 <body>
+    <!-- Language Switcher -->
+    <div class="language-switcher">
+        <button class="lang-btn active" onclick="setLanguage('ko')">🇰🇷</button>
+        <button class="lang-btn" onclick="setLanguage('en')">🇺🇸</button>
+    </div>
+
     <div class="container">
         <!-- 회원가입 폼 -->
         <div id="signupForm" class="auth-form floating">
-            <h2>⚔️ RPG 어드벤처 회원가입</h2>
+            <h2 data-text="signup-title">⚔️ RPG 어드벤처 회원가입</h2>
             <div class="input-group">
-                <label for="signupUsername">🧙‍♂️ 영웅의 이름</label>
-                <input type="text" id="signupUsername" placeholder="당신의 영웅 이름을 입력하세요">
+                <label for="signupUsername" data-text="hero-name">🧙‍♂️ 영웅의 이름</label>
+                <input type="text" id="signupUsername" data-placeholder="enter-hero-name" placeholder="당신의 영웅 이름을 입력하세요">
             </div>
             <div class="input-group">
-                <label for="signupPassword">🔒 비밀 주문</label>
-                <input type="password" id="signupPassword" placeholder="강력한 비밀번호를 설정하세요">
+                <label for="signupPassword" data-text="secret-spell">🔒 비밀 주문</label>
+                <input type="password" id="signupPassword" data-placeholder="set-password" placeholder="강력한 비밀번호를 설정하세요">
             </div>
             <div class="input-group">
-                <label for="characterClass">🎭 모험가 직업</label>
+                <label for="characterClass" data-text="adventurer-class">🎭 모험가 직업</label>
                 <select id="characterClass">
-                    <option value="warrior">⚔️ 전사 - 강인한 체력과 막강한 공격력</option>
-                    <option value="mage">🔮 마법사 - 신비한 마법과 강력한 주문</option>
-                    <option value="rogue">🗡️ 도적 - 민첩한 움직임과 치명적 공격</option>
-                    <option value="paladin">🛡️ 성기사 - 균형잡힌 능력과 치유 마법</option>
-                    <option value="archer">🏹 궁수 - 정확한 원거리 공격과 속도</option>
+                    <option value="warrior" data-text="warrior-desc">⚔️ 전사 - 강인한 체력과 막강한 공격력</option>
+                    <option value="mage" data-text="mage-desc">🔮 마법사 - 신비한 마법과 강력한 주문</option>
+                    <option value="rogue" data-text="rogue-desc">🗡️ 도적 - 민첩한 움직임과 치명적 공격</option>
+                    <option value="paladin" data-text="paladin-desc">🛡️ 성기사 - 균형잡힌 능력과 치유 마법</option>
+                    <option value="archer" data-text="archer-desc">🏹 궁수 - 정확한 원거리 공격과 속도</option>
                 </select>
             </div>
-            <button class="btn btn-primary" onclick="signup()">🌟 모험 시작하기</button>
-            <button class="btn btn-secondary" onclick="showLogin()">🏰 기존 영웅으로 입장</button>
-            <button class="btn btn-discord" onclick="window.open('https://discord.gg/y9EhqTEyh7', '_blank')">
+            <button class="btn btn-primary" onclick="signup()" data-text="start-adventure">🌟 모험 시작하기</button>
+            <button class="btn btn-secondary" onclick="showLogin()" data-text="existing-hero">🏰 기존 영웅으로 입장</button>
+            <button class="btn btn-discord" onclick="window.open('https://discord.gg/y9EhqTEyh7', '_blank')" data-text="join-discord">
                 💬 Discord 커뮤니티 참여
             </button>
             <div id="signupError" class="error-message" style="display: none;"></div>
@@ -688,19 +744,19 @@
 
         <!-- 로그인 폼 -->
         <div id="loginForm" class="auth-form floating" style="display: none;">
-            <h2>🏰 영웅의 귀환</h2>
+            <h2 data-text="hero-return">🏰 영웅의 귀환</h2>
             <div class="input-group">
-                <label for="loginUsername">🧙‍♂️ 영웅의 이름</label>
-                <input type="text" id="loginUsername" placeholder="영웅의 이름을 입력하세요">
+                <label for="loginUsername" data-text="hero-name">🧙‍♂️ 영웅의 이름</label>
+                <input type="text" id="loginUsername" data-placeholder="enter-hero-name-login" placeholder="영웅의 이름을 입력하세요">
             </div>
             <div class="input-group">
-                <label for="loginPassword">🔒 비밀 주문</label>
-                <input type="password" id="loginPassword" placeholder="비밀 주문을 입력하세요">
+                <label for="loginPassword" data-text="secret-spell">🔒 비밀 주문</label>
+                <input type="password" id="loginPassword" data-placeholder="enter-password" placeholder="비밀 주문을 입력하세요">
             </div>
-            <button class="btn btn-primary" onclick="login()">⚡ 모험 재개하기</button>
-            <button class="btn btn-secondary" onclick="showSignup()">🆕 새로운 영웅 만들기</button>
-            <button class="btn btn-admin" onclick="showAdminLogin()">🔧 관리자 로그인</button>
-            <button class="btn btn-discord" onclick="window.open('https://discord.gg/y9EhqTEyh7', '_blank')">
+            <button class="btn btn-primary" onclick="login()" data-text="resume-adventure">⚡ 모험 재개하기</button>
+            <button class="btn btn-secondary" onclick="showSignup()" data-text="new-hero">🆕 새로운 영웅 만들기</button>
+            <button class="btn btn-admin" onclick="showAdminLogin()" data-text="admin-login">🔧 관리자 로그인</button>
+            <button class="btn btn-discord" onclick="window.open('https://discord.gg/y9EhqTEyh7', '_blank')" data-text="join-discord">
                 💬 Discord 커뮤니티 참여
             </button>
             <div id="loginError" class="error-message" style="display: none;"></div>
@@ -709,18 +765,18 @@
         <!-- 게임 화면 -->
         <div id="gameContainer" class="game-container">
             <div class="user-info glow">
-                <h1>🎮 RPG 어드벤처 월드</h1>
+                <h1 data-text="rpg-world-title">🎮 RPG 어드벤처 월드</h1>
                 <p id="welcomeMessage"></p>
                 <div style="margin-top: 15px;">
-                    <button class="btn btn-danger" onclick="logout()" style="width: auto; padding: 10px 25px; margin: 5px;">🚪 모험 종료</button>
-                    <button class="btn btn-success" onclick="saveGame()" style="width: auto; padding: 10px 25px; margin: 5px;">💾 게임 저장</button>
+                    <button class="btn btn-danger" onclick="logout()" style="width: auto; padding: 10px 25px; margin: 5px;" data-text="end-adventure">🚪 모험 종료</button>
+                    <button class="btn btn-success" onclick="saveGame()" style="width: auto; padding: 10px 25px; margin: 5px;" data-text="save-game">💾 게임 저장</button>
                     <button class="btn btn-discord" onclick="window.open('https://discord.gg/y9EhqTEyh7', '_blank')" style="width: auto; padding: 10px 25px; margin: 5px;">💬 Discord</button>
                 </div>
             </div>
 
             <div class="character-stats">
                 <div class="stat-box">
-                    <div class="stat-label">❤️ 생명력</div>
+                    <div class="stat-label" data-text="health">❤️ 생명력</div>
                     <div class="stat-value" id="currentHP">100</div>
                     <div class="progress-bar">
                         <div class="progress-fill hp-bar" id="hpBar" style="width: 100%;"></div>
@@ -728,7 +784,7 @@
                     <small id="hpText">100/100</small>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-label">⚡ 마나</div>
+                    <div class="stat-label" data-text="mana">⚡ 마나</div>
                     <div class="stat-value" id="currentMP">50</div>
                     <div class="progress-bar">
                         <div class="progress-fill mp-bar" id="mpBar" style="width: 100%;"></div>
@@ -736,11 +792,11 @@
                     <small id="mpText">50/50</small>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-label">🌟 레벨</div>
+                    <div class="stat-label" data-text="level">🌟 레벨</div>
                     <div class="stat-value" id="level">1</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-label">⭐ 경험치</div>
+                    <div class="stat-label" data-text="experience">⭐ 경험치</div>
                     <div class="stat-value" id="experience">0</div>
                     <div class="progress-bar">
                         <div class="progress-fill exp-bar" id="expBar" style="width: 0%;"></div>
@@ -748,27 +804,27 @@
                     <small id="expText">0/100</small>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-label">💰 골드</div>
+                    <div class="stat-label" data-text="gold">💰 골드</div>
                     <div class="stat-value" id="gold">50</div>
                 </div>
                 <div class="stat-box">
-                    <div class="stat-label">🏆 승리</div>
+                    <div class="stat-label" data-text="victories">🏆 승리</div>
                     <div class="stat-value" id="victories">0</div>
                 </div>
             </div>
 
             <div class="battle-log" id="battleLog">
-                <div class="log-entry">🎮 레전드 오브 어드벤처에 오신 것을 환영합니다! 영웅들의 전설이 시작됩니다!</div>
+                <div class="log-entry" data-text="welcome-message">🎮 레전드 오브 어드벤처에 오신 것을 환영합니다! 영웅들의 전설이 시작됩니다!</div>
             </div>
 
             <div class="game-actions">
-                <button class="btn btn-primary" onclick="hunt()">🗡️ 몬스터 사냥</button>
-                <button class="btn btn-success" onclick="rest()">💤 여관에서 휴식</button>
-                <button class="btn btn-secondary" onclick="useSkill()">✨ 특수 기술</button>
-                <button class="btn btn-primary" onclick="openShop()">🏪 상점 방문</button>
-                <button class="btn btn-success" onclick="openInventory()">🎒 인벤토리</button>
-                <button class="btn btn-secondary" onclick="explore()">🗺️ 던전 탐험</button>
-                <button class="btn btn-primary" onclick="showStats()">📊 영웅 정보</button>
+                <button class="btn btn-primary" onclick="hunt()" data-text="hunt-monsters">🗡️ 몬스터 사냥</button>
+                <button class="btn btn-success" onclick="rest()" data-text="rest-inn">💤 여관에서 휴식</button>
+                <button class="btn btn-secondary" onclick="useSkill()" data-text="special-skill">✨ 특수 기술</button>
+                <button class="btn btn-primary" onclick="openShop()" data-text="visit-shop">🏪 상점 방문</button>
+                <button class="btn btn-success" onclick="openInventory()" data-text="inventory">🎒 인벤토리</button>
+                <button class="btn btn-secondary" onclick="explore()" data-text="explore-dungeon">🗺️ 던전 탐험</button>
+                <button class="btn btn-primary" onclick="showStats()" data-text="hero-info">📊 영웅 정보</button>
             </div>
         </div>
     </div>
@@ -777,8 +833,8 @@
     <div id="shopModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeShop()">&times;</span>
-            <h2>🏪 신비한 상점</h2>
-            <p style="text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 20px;">
+            <h2 data-text="mysterious-shop">🏪 신비한 상점</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 20px;" data-text="current-gold-shop">
                 💰 보유 골드: <span id="shopGold" style="color: #ffd700; font-weight: bold;">0</span>
             </p>
             <div class="shop-items" id="shopItems">
@@ -791,8 +847,8 @@
     <div id="inventoryModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeInventory()">&times;</span>
-            <h2>🎒 영웅의 인벤토리</h2>
-            <p style="text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 20px;">
+            <h2 data-text="hero-inventory">🎒 영웅의 인벤토리</h2>
+            <p style="text-align: center; color: rgba(255,255,255,0.8); margin-bottom: 20px;" data-text="owned-items">
                 📦 보유 아이템: <span id="inventoryCount" style="color: #ffd700; font-weight: bold;">0</span>개
             </p>
             <div class="inventory-items" id="inventoryItems">
@@ -805,16 +861,16 @@
     <div id="adminLoginModal" class="modal">
         <div class="modal-content">
             <span class="close" onclick="closeAdminLogin()">&times;</span>
-            <h2>🔧 관리자 로그인</h2>
+            <h2 data-text="admin-login">🔧 관리자 로그인</h2>
             <div class="input-group">
-                <label for="adminUsername">관리자 ID</label>
-                <input type="text" id="adminUsername" placeholder="관리자 아이디를 입력하세요">
+                <label for="adminUsername" data-text="admin-id">관리자 ID</label>
+                <input type="text" id="adminUsername" data-placeholder="enter-admin-id" placeholder="관리자 아이디를 입력하세요">
             </div>
             <div class="input-group">
-                <label for="adminPassword">관리자 비밀번호</label>
-                <input type="password" id="adminPassword" placeholder="관리자 비밀번호를 입력하세요">
+                <label for="adminPassword" data-text="admin-password">관리자 비밀번호</label>
+                <input type="password" id="adminPassword" data-placeholder="enter-admin-password" placeholder="관리자 비밀번호를 입력하세요">
             </div>
-            <button class="btn btn-admin" onclick="adminLogin()">🔓 관리자 로그인</button>
+            <button class="btn btn-admin" onclick="adminLogin()" data-text="admin-login">🔓 관리자 로그인</button>
             <div id="adminLoginError" class="error-message" style="display: none;"></div>
         </div>
     </div>
@@ -823,72 +879,289 @@
     <div id="adminPanelModal" class="modal">
         <div class="modal-content admin-modal-content">
             <span class="close" onclick="closeAdminPanel()">&times;</span>
-            <h2>🔧 관리자 패널</h2>
+            <h2 data-text="admin-panel">🔧 관리자 패널</h2>
             
             <div class="admin-panel">
-                <h3>📊 서버 통계</h3>
+                <h3 data-text="server-stats">📊 서버 통계</h3>
                 <div class="character-stats">
                     <div class="stat-box">
-                        <div class="stat-label">👥 총 사용자</div>
+                        <div class="stat-label" data-text="total-users">👥 총 사용자</div>
                         <div class="stat-value" id="totalUsers">0</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">🌟 평균 레벨</div>
+                        <div class="stat-label" data-text="avg-level">🌟 평균 레벨</div>
                         <div class="stat-value" id="averageLevel">1</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">💰 총 골드</div>
+                        <div class="stat-label" data-text="total-gold">💰 총 골드</div>
                         <div class="stat-value" id="totalGold">0</div>
                     </div>
                     <div class="stat-box">
-                        <div class="stat-label">🏆 총 승리</div>
+                        <div class="stat-label" data-text="total-victories">🏆 총 승리</div>
                         <div class="stat-value" id="totalVictories">0</div>
                     </div>
                 </div>
             </div>
 
             <div class="admin-panel">
-                <h3>🎮 전체 공지사항</h3>
+                <h3 data-text="global-notice">🎮 전체 공지사항</h3>
                 <div class="input-group">
-                    <textarea id="noticeText" placeholder="모든 플레이어에게 전송할 공지사항을 입력하세요..."></textarea>
+                    <textarea id="noticeText" data-placeholder="notice-placeholder" placeholder="모든 플레이어에게 전송할 공지사항을 입력하세요..."></textarea>
                 </div>
-                <button class="btn btn-primary" onclick="sendGlobalNotice()">📢 전체 공지 전송</button>
+                <button class="btn btn-primary" onclick="sendGlobalNotice()" data-text="send-notice">📢 전체 공지 전송</button>
             </div>
 
             <div class="admin-panel">
-                <h3>👥 사용자 관리</h3>
+                <h3 data-text="user-management">👥 사용자 관리</h3>
                 <div class="user-list" id="userList">
                     <!-- 사용자 목록이 여기에 동적으로 생성됩니다 -->
                 </div>
             </div>
 
             <div class="admin-panel">
-                <h3>🎁 아이템 지급</h3>
+                <h3 data-text="give-items">🎁 아이템 지급</h3>
                 <div class="input-group">
-                    <label for="giftUsername">대상 사용자</label>
-                    <input type="text" id="giftUsername" placeholder="아이템을 받을 사용자명">
+                    <label for="giftUsername" data-text="target-user">대상 사용자</label>
+                    <input type="text" id="giftUsername" data-placeholder="target-username" placeholder="아이템을 받을 사용자명">
                 </div>
                 <div class="input-group">
-                    <label for="giftType">지급 아이템</label>
+                    <label for="giftType" data-text="gift-item">지급 아이템</label>
                     <select id="giftType">
-                        <option value="gold">💰 골드</option>
-                        <option value="exp">⭐ 경험치</option>
-                        <option value="hp">❤️ 체력</option>
-                        <option value="mp">⚡ 마나</option>
-                        <option value="level">🌟 레벨</option>
+                        <option value="gold" data-text="gold">💰 골드</option>
+                        <option value="exp" data-text="experience">⭐ 경험치</option>
+                        <option value="hp" data-text="health">❤️ 체력</option>
+                        <option value="mp" data-text="mana">⚡ 마나</option>
+                        <option value="level" data-text="level">🌟 레벨</option>
                     </select>
                 </div>
                 <div class="input-group">
-                    <label for="giftAmount">수량</label>
-                    <input type="number" id="giftAmount" placeholder="지급할 수량" min="1" max="9999">
+                    <label for="giftAmount" data-text="quantity">수량</label>
+                    <input type="number" id="giftAmount" data-placeholder="gift-amount" placeholder="지급할 수량" min="1" max="9999">
                 </div>
-                <button class="btn btn-success" onclick="giveItem()">🎁 아이템 지급</button>
+                <button class="btn btn-success" onclick="giveItem()" data-text="give-item">🎁 아이템 지급</button>
             </div>
         </div>
     </div>
 
     <script>
-        let users = JSON.parse(localStorage.getItem('rpgUsers') || '{}'); // 브라우저 저장소에서 불러오기
+        // 언어 설정
+        let currentLang = 'ko';
+        
+        const translations = {
+            ko: {
+                // 회원가입 폼
+                'signup-title': '⚔️ RPG 어드벤처 회원가입',
+                'hero-name': '🧙‍♂️ 영웅의 이름',
+                'secret-spell': '🔒 비밀 주문',
+                'adventurer-class': '🎭 모험가 직업',
+                'warrior-desc': '⚔️ 전사 - 강인한 체력과 막강한 공격력',
+                'mage-desc': '🔮 마법사 - 신비한 마법과 강력한 주문',
+                'rogue-desc': '🗡️ 도적 - 민첩한 움직임과 치명적 공격',
+                'paladin-desc': '🛡️ 성기사 - 균형잡힌 능력과 치유 마법',
+                'archer-desc': '🏹 궁수 - 정확한 원거리 공격과 속도',
+                'start-adventure': '🌟 모험 시작하기',
+                'existing-hero': '🏰 기존 영웅으로 입장',
+                'join-discord': '💬 Discord 커뮤니티 참여',
+                
+                // 로그인 폼
+                'hero-return': '🏰 영웅의 귀환',
+                'resume-adventure': '⚡ 모험 재개하기',
+                'new-hero': '🆕 새로운 영웅 만들기',
+                'admin-login': '🔧 관리자 로그인',
+                
+                // 게임 화면
+                'rpg-world-title': '🎮 RPG 어드벤처 월드',
+                'end-adventure': '🚪 모험 종료',
+                'save-game': '💾 게임 저장',
+                'health': '❤️ 생명력',
+                'mana': '⚡ 마나',
+                'level': '🌟 레벨',
+                'experience': '⭐ 경험치',
+                'gold': '💰 골드',
+                'victories': '🏆 승리',
+                'welcome-message': '🎮 레전드 오브 어드벤처에 오신 것을 환영합니다! 영웅들의 전설이 시작됩니다!',
+                
+                // 게임 액션
+                'hunt-monsters': '🗡️ 몬스터 사냥',
+                'rest-inn': '💤 여관에서 휴식',
+                'special-skill': '✨ 특수 기술',
+                'visit-shop': '🏪 상점 방문',
+                'inventory': '🎒 인벤토리',
+                'explore-dungeon': '🗺️ 던전 탐험',
+                'hero-info': '📊 영웅 정보',
+                
+                // 상점
+                'mysterious-shop': '🏪 신비한 상점',
+                'current-gold-shop': '💰 보유 골드: ',
+                'hero-inventory': '🎒 영웅의 인벤토리',
+                'owned-items': '📦 보유 아이템: ',
+                
+                // 관리자
+                'admin-panel': '🔧 관리자 패널',
+                'server-stats': '📊 서버 통계',
+                'total-users': '👥 총 사용자',
+                'avg-level': '🌟 평균 레벨',
+                'total-gold': '💰 총 골드',
+                'total-victories': '🏆 총 승리',
+                'global-notice': '🎮 전체 공지사항',
+                'send-notice': '📢 전체 공지 전송',
+                'user-management': '👥 사용자 관리',
+                'give-items': '🎁 아이템 지급',
+                'target-user': '대상 사용자',
+                'gift-item': '지급 아이템',
+                'quantity': '수량',
+                'give-item': '🎁 아이템 지급',
+                'admin-id': '관리자 ID',
+                'admin-password': '관리자 비밀번호',
+                
+                // Placeholders
+                'enter-hero-name': '당신의 영웅 이름을 입력하세요',
+                'set-password': '강력한 비밀번호를 설정하세요',
+                'enter-hero-name-login': '영웅의 이름을 입력하세요',
+                'enter-password': '비밀 주문을 입력하세요',
+                'enter-admin-id': '관리자 아이디를 입력하세요',
+                'enter-admin-password': '관리자 비밀번호를 입력하세요',
+                'notice-placeholder': '모든 플레이어에게 전송할 공지사항을 입력하세요...',
+                'target-username': '아이템을 받을 사용자명',
+                'gift-amount': '지급할 수량'
+            },
+            en: {
+                // Signup form
+                'signup-title': '⚔️ RPG Adventure Registration',
+                'hero-name': '🧙‍♂️ Hero Name',
+                'secret-spell': '🔒 Secret Password',
+                'adventurer-class': '🎭 Adventurer Class',
+                'warrior-desc': '⚔️ Warrior - Strong health and powerful attacks',
+                'mage-desc': '🔮 Mage - Mystical magic and powerful spells',
+                'rogue-desc': '🗡️ Rogue - Agile movement and critical attacks',
+                'paladin-desc': '🛡️ Paladin - Balanced abilities and healing magic',
+                'archer-desc': '🏹 Archer - Precise ranged attacks and speed',
+                'start-adventure': '🌟 Start Adventure',
+                'existing-hero': '🏰 Enter as Existing Hero',
+                'join-discord': '💬 Join Discord Community',
+                
+                // Login form
+                'hero-return': '🏰 Hero\'s Return',
+                'resume-adventure': '⚡ Resume Adventure',
+                'new-hero': '🆕 Create New Hero',
+                'admin-login': '🔧 Admin Login',
+                
+                // Game screen
+                'rpg-world-title': '🎮 RPG Adventure World',
+                'end-adventure': '🚪 End Adventure',
+                'save-game': '💾 Save Game',
+                'health': '❤️ Health',
+                'mana': '⚡ Mana',
+                'level': '🌟 Level',
+                'experience': '⭐ Experience',
+                'gold': '💰 Gold',
+                'victories': '🏆 Victories',
+                'welcome-message': '🎮 Welcome to Legend of Adventure! The legend of heroes begins!',
+                
+                // Game actions
+                'hunt-monsters': '🗡️ Hunt Monsters',
+                'rest-inn': '💤 Rest at Inn',
+                'special-skill': '✨ Special Skill',
+                'visit-shop': '🏪 Visit Shop',
+                'inventory': '🎒 Inventory',
+                'explore-dungeon': '🗺️ Explore Dungeon',
+                'hero-info': '📊 Hero Info',
+                
+                // Shop
+                'mysterious-shop': '🏪 Mysterious Shop',
+                'current-gold-shop': '💰 Current Gold: ',
+                'hero-inventory': '🎒 Hero\'s Inventory',
+                'owned-items': '📦 Owned Items: ',
+                
+                // Admin
+                'admin-panel': '🔧 Admin Panel',
+                'server-stats': '📊 Server Statistics',
+                'total-users': '👥 Total Users',
+                'avg-level': '🌟 Average Level',
+                'total-gold': '💰 Total Gold',
+                'total-victories': '🏆 Total Victories',
+                'global-notice': '🎮 Global Notice',
+                'send-notice': '📢 Send Global Notice',
+                'user-management': '👥 User Management',
+                'give-items': '🎁 Give Items',
+                'target-user': 'Target User',
+                'gift-item': 'Gift Item',
+                'quantity': 'Quantity',
+                'give-item': '🎁 Give Item',
+                'admin-id': 'Admin ID',
+                'admin-password': 'Admin Password',
+                
+                // Placeholders
+                'enter-hero-name': 'Enter your hero name',
+                'set-password': 'Set a strong password',
+                'enter-hero-name-login': 'Enter hero name',
+                'enter-password': 'Enter password',
+                'enter-admin-id': 'Enter admin ID',
+                'enter-admin-password': 'Enter admin password',
+                'notice-placeholder': 'Enter notice to send to all players...',
+                'target-username': 'Username to receive item',
+                'gift-amount': 'Amount to give'
+            }
+        };
+        
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.getElementById('htmlLang').lang = lang;
+            localStorage.setItem('rpgLang', lang);
+            
+            // Update active button
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            event.target.classList.add('active');
+            
+            // Update all text elements
+            updateLanguage();
+        }
+        
+        function updateLanguage() {
+            const elements = document.querySelectorAll('[data-text]');
+            elements.forEach(element => {
+                const key = element.getAttribute('data-text');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    if (element.tagName === 'OPTION') {
+                        element.textContent = translations[currentLang][key];
+                    } else {
+                        element.innerHTML = translations[currentLang][key];
+                    }
+                }
+            });
+            
+            // Update placeholders
+            const placeholders = document.querySelectorAll('[data-placeholder]');
+            placeholders.forEach(element => {
+                const key = element.getAttribute('data-placeholder');
+                if (translations[currentLang] && translations[currentLang][key]) {
+                    element.placeholder = translations[currentLang][key];
+                }
+            });
+            
+            // Update document title
+            document.title = currentLang === 'ko' ? 'RPG 어드벤처 게임' : 'RPG Adventure Game';
+        }
+        
+        // Load saved language on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const savedLang = localStorage.getItem('rpgLang') || 'ko';
+            if (savedLang !== 'ko') {
+                currentLang = savedLang;
+                document.querySelectorAll('.lang-btn').forEach(btn => {
+                    btn.classList.remove('active');
+                    if ((savedLang === 'en' && btn.textContent === '🇺🇸') || 
+                        (savedLang === 'ko' && btn.textContent === '🇰🇷')) {
+                        btn.classList.add('active');
+                    }
+                });
+                updateLanguage();
+            }
+        });
+
+        let users = JSON.parse(localStorage.getItem('rpgUsers') || '{}');
         let currentUser = null;
         let isAdmin = false;
 
@@ -908,161 +1181,104 @@
         };
 
         const classNames = {
-            warrior: '전사',
-            mage: '마법사',
-            rogue: '도적',
-            paladin: '성기사',
-            archer: '궁수'
+            ko: {
+                warrior: '전사',
+                mage: '마법사',
+                rogue: '도적',
+                paladin: '성기사',
+                archer: '궁수'
+            },
+            en: {
+                warrior: 'Warrior',
+                mage: 'Mage',
+                rogue: 'Rogue',
+                paladin: 'Paladin',
+                archer: 'Archer'
+            }
         };
 
-        const monsters = [
-            { name: '슬라임', hp: 30, attack: 8, exp: 15, gold: 10, emoji: '💧' },
-            { name: '고블린', hp: 50, attack: 12, exp: 25, gold: 20, emoji: '👹' },
-            { name: '오크', hp: 80, attack: 18, exp: 40, gold: 35, emoji: '👺' },
-            { name: '스켈레톤', hp: 70, attack: 15, exp: 35, gold: 30, emoji: '💀' },
-            { name: '늑대', hp: 60, attack: 14, exp: 30, gold: 25, emoji: '🐺' },
-            { name: '거미', hp: 45, attack: 10, exp: 20, gold: 15, emoji: '🕷️' },
-            { name: '박쥐', hp: 25, attack: 6, exp: 12, gold: 8, emoji: '🦇' },
-            { name: '드래곤', hp: 200, attack: 35, exp: 100, gold: 100, emoji: '🐲' }
-        ];
+        const monsters = {
+            ko: [
+                { name: '슬라임', hp: 30, attack: 8, exp: 15, gold: 10, emoji: '💧' },
+                { name: '고블린', hp: 50, attack: 12, exp: 25, gold: 20, emoji: '👹' },
+                { name: '오크', hp: 80, attack: 18, exp: 40, gold: 35, emoji: '👺' },
+                { name: '스켈레톤', hp: 70, attack: 15, exp: 35, gold: 30, emoji: '💀' },
+                { name: '늑대', hp: 60, attack: 14, exp: 30, gold: 25, emoji: '🐺' },
+                { name: '거미', hp: 45, attack: 10, exp: 20, gold: 15, emoji: '🕷️' },
+                { name: '박쥐', hp: 25, attack: 6, exp: 12, gold: 8, emoji: '🦇' },
+                { name: '드래곤', hp: 200, attack: 35, exp: 100, gold: 100, emoji: '🐲' }
+            ],
+            en: [
+                { name: 'Slime', hp: 30, attack: 8, exp: 15, gold: 10, emoji: '💧' },
+                { name: 'Goblin', hp: 50, attack: 12, exp: 25, gold: 20, emoji: '👹' },
+                { name: 'Orc', hp: 80, attack: 18, exp: 40, gold: 35, emoji: '👺' },
+                { name: 'Skeleton', hp: 70, attack: 15, exp: 35, gold: 30, emoji: '💀' },
+                { name: 'Wolf', hp: 60, attack: 14, exp: 30, gold: 25, emoji: '🐺' },
+                { name: 'Spider', hp: 45, attack: 10, exp: 20, gold: 15, emoji: '🕷️' },
+                { name: 'Bat', hp: 25, attack: 6, exp: 12, gold: 8, emoji: '🦇' },
+                { name: 'Dragon', hp: 200, attack: 35, exp: 100, gold: 100, emoji: '🐲' }
+            ]
+        };
 
-        // 상점 아이템 정의
-        const shopItems = [
-            {
-                id: 'health_potion',
-                name: '체력 물약',
-                emoji: '🧪',
-                price: 30,
-                description: '체력을 50 회복합니다',
-                category: 'potion',
-                effect: (user) => {
-                    const heal = 50;
-                    user.currentHP = Math.min(user.maxHP, user.currentHP + heal);
-                    return `❤️ 체력이 ${heal} 회복되었습니다!`;
+        // 상점 아이템 정의 (다국어 지원)
+        const shopItems = {
+            ko: [
+                {
+                    id: 'health_potion',
+                    name: '체력 물약',
+                    emoji: '🧪',
+                    price: 30,
+                    description: '체력을 50 회복합니다',
+                    category: 'potion',
+                    effect: (user) => {
+                        const heal = 50;
+                        user.currentHP = Math.min(user.maxHP, user.currentHP + heal);
+                        return `❤️ 체력이 ${heal} 회복되었습니다!`;
+                    }
+                },
+                {
+                    id: 'mana_potion',
+                    name: '마나 물약',
+                    emoji: '🔮',
+                    price: 25,
+                    description: '마나를 40 회복합니다',
+                    category: 'potion',
+                    effect: (user) => {
+                        const mana = 40;
+                        user.currentMP = Math.min(user.maxMP, user.currentMP + mana);
+                        return `⚡ 마나가 ${mana} 회복되었습니다!`;
+                    }
                 }
-            },
-            {
-                id: 'mana_potion',
-                name: '마나 물약',
-                emoji: '🔮',
-                price: 25,
-                description: '마나를 40 회복합니다',
-                category: 'potion',
-                effect: (user) => {
-                    const mana = 40;
-                    user.currentMP = Math.min(user.maxMP, user.currentMP + mana);
-                    return `⚡ 마나가 ${mana} 회복되었습니다!`;
+            ],
+            en: [
+                {
+                    id: 'health_potion',
+                    name: 'Health Potion',
+                    emoji: '🧪',
+                    price: 30,
+                    description: 'Recovers 50 health',
+                    category: 'potion',
+                    effect: (user) => {
+                        const heal = 50;
+                        user.currentHP = Math.min(user.maxHP, user.currentHP + heal);
+                        return `❤️ Health recovered by ${heal}!`;
+                    }
+                },
+                {
+                    id: 'mana_potion',
+                    name: 'Mana Potion',
+                    emoji: '🔮',
+                    price: 25,
+                    description: 'Recovers 40 mana',
+                    category: 'potion',
+                    effect: (user) => {
+                        const mana = 40;
+                        user.currentMP = Math.min(user.maxMP, user.currentMP + mana);
+                        return `⚡ Mana recovered by ${mana}!`;
+                    }
                 }
-            },
-            {
-                id: 'exp_potion',
-                name: '경험치 물약',
-                emoji: '⭐',
-                price: 50,
-                description: '경험치를 30 획득합니다',
-                category: 'potion',
-                effect: (user) => {
-                    const exp = 30;
-                    user.experience += exp;
-                    return `⭐ 경험치를 ${exp} 획득했습니다!`;
-                }
-            },
-            {
-                id: 'iron_sword',
-                name: '철검',
-                emoji: '⚔️',
-                price: 80,
-                description: '공격력을 3 증가시킵니다',
-                category: 'weapon',
-                effect: (user) => {
-                    user.attack += 3;
-                    return `⚔️ 공격력이 3 증가했습니다! (현재: ${user.attack})`;
-                }
-            },
-            {
-                id: 'magic_staff',
-                name: '마법 지팡이',
-                emoji: '🪄',
-                price: 90,
-                description: '공격력 2와 마나 10을 증가시킵니다',
-                category: 'weapon',
-                effect: (user) => {
-                    user.attack += 2;
-                    user.maxMP += 10;
-                    user.currentMP += 10;
-                    return `🪄 공격력 +2, 최대 마나 +10 증가! (공격력: ${user.attack}, 마나: ${user.maxMP})`;
-                }
-            },
-            {
-                id: 'steel_armor',
-                name: '강철 갑옷',
-                emoji: '🛡️',
-                price: 100,
-                description: '방어력을 5 증가시킵니다',
-                category: 'armor',
-                effect: (user) => {
-                    user.defense += 5;
-                    return `🛡️ 방어력이 5 증가했습니다! (현재: ${user.defense})`;
-                }
-            },
-            {
-                id: 'leather_boots',
-                name: '가죽 부츠',
-                emoji: '👢',
-                price: 60,
-                description: '방어력 2와 체력 20을 증가시킵니다',
-                category: 'armor',
-                effect: (user) => {
-                    user.defense += 2;
-                    user.maxHP += 20;
-                    user.currentHP += 20;
-                    return `👢 방어력 +2, 최대 체력 +20 증가! (방어력: ${user.defense}, 체력: ${user.maxHP})`;
-                }
-            },
-            {
-                id: 'magic_ring',
-                name: '마법 반지',
-                emoji: '💍',
-                price: 120,
-                description: '모든 능력치를 2씩 증가시킵니다',
-                category: 'accessory',
-                effect: (user) => {
-                    user.attack += 2;
-                    user.defense += 2;
-                    user.maxHP += 15;
-                    user.maxMP += 15;
-                    user.currentHP = Math.min(user.maxHP, user.currentHP + 15);
-                    user.currentMP = Math.min(user.maxMP, user.currentMP + 15);
-                    return `💍 모든 능력치가 향상되었습니다! 공격력 +2, 방어력 +2, 체력 +15, 마나 +15`;
-                }
-            },
-            {
-                id: 'elixir',
-                name: '만능 비약',
-                emoji: '🍺',
-                price: 200,
-                description: '체력과 마나를 완전히 회복하고 경험치 50을 획득합니다',
-                category: 'special',
-                effect: (user) => {
-                    user.currentHP = user.maxHP;
-                    user.currentMP = user.maxMP;
-                    user.experience += 50;
-                    return `🍺 완전히 회복되었고 경험치 50을 획득했습니다!`;
-                }
-            },
-            {
-                id: 'dragon_sword',
-                name: '드래곤 검',
-                emoji: '🗡️',
-                price: 300,
-                description: '전설적인 무기! 공격력을 10 크게 증가시킵니다',
-                category: 'legendary',
-                effect: (user) => {
-                    user.attack += 10;
-                    return `🗡️ 드래곤의 힘이 깃든 검! 공격력이 10 증가했습니다! (현재: ${user.attack})`;
-                }
-            }
-        ];
+            ]
+        };
 
         // 데이터 저장 함수
         function saveData() {
@@ -1093,22 +1309,34 @@
             const characterClass = document.getElementById('characterClass').value;
 
             if (!username || !password) {
-                showError('signupError', '영웅의 이름과 비밀 주문을 모두 입력해주세요! ⚠️');
+                const errorMsg = currentLang === 'ko' ? 
+                    '영웅의 이름과 비밀 주문을 모두 입력해주세요! ⚠️' : 
+                    'Please enter both hero name and password! ⚠️';
+                showError('signupError', errorMsg);
                 return;
             }
 
             if (username.length < 2) {
-                showError('signupError', '영웅의 이름은 최소 2글자 이상이어야 합니다! 📝');
+                const errorMsg = currentLang === 'ko' ? 
+                    '영웅의 이름은 최소 2글자 이상이어야 합니다! 📝' : 
+                    'Hero name must be at least 2 characters! 📝';
+                showError('signupError', errorMsg);
                 return;
             }
 
             if (password.length < 4) {
-                showError('signupError', '비밀 주문은 최소 4자 이상이어야 합니다! 🔐');
+                const errorMsg = currentLang === 'ko' ? 
+                    '비밀 주문은 최소 4자 이상이어야 합니다! 🔐' : 
+                    'Password must be at least 4 characters! 🔐';
+                showError('signupError', errorMsg);
                 return;
             }
 
             if (users[username]) {
-                showError('signupError', '이미 존재하는 영웅 이름입니다! 다른 이름을 선택해주세요. 🚫');
+                const errorMsg = currentLang === 'ko' ? 
+                    '이미 존재하는 영웅 이름입니다! 다른 이름을 선택해주세요. 🚫' : 
+                    'Hero name already exists! Please choose a different name. 🚫';
+                showError('signupError', errorMsg);
                 return;
             }
 
@@ -1133,8 +1361,11 @@
                 lastLogin: Date.now()
             };
 
-            saveData(); // 데이터 저장
-            alert('🎉 영웅 등록이 완료되었습니다! 이제 모험을 시작하세요!');
+            saveData();
+            const successMsg = currentLang === 'ko' ? 
+                '🎉 영웅 등록이 완료되었습니다! 이제 모험을 시작하세요!' : 
+                '🎉 Hero registration complete! Start your adventure now!';
+            alert(successMsg);
             showLogin();
             document.getElementById('loginUsername').value = username;
         }
@@ -1144,16 +1375,21 @@
             const password = document.getElementById('loginPassword').value.trim();
 
             if (!username || !password) {
-                showError('loginError', '영웅의 이름과 비밀 주문을 모두 입력해주세요! ⚠️');
+                const errorMsg = currentLang === 'ko' ? 
+                    '영웅의 이름과 비밀 주문을 모두 입력해주세요! ⚠️' : 
+                    'Please enter both hero name and password! ⚠️';
+                showError('loginError', errorMsg);
                 return;
             }
 
             if (!users[username] || users[username].password !== password) {
-                showError('loginError', '잘못된 영웅 이름 또는 비밀 주문입니다! 🚫');
+                const errorMsg = currentLang === 'ko' ? 
+                    '잘못된 영웅 이름 또는 비밀 주문입니다! 🚫' : 
+                    'Invalid hero name or password! 🚫';
+                showError('loginError', errorMsg);
                 return;
             }
 
-            // 마지막 로그인 시간 업데이트
             users[username].lastLogin = Date.now();
             saveData();
 
@@ -1163,7 +1399,10 @@
         }
 
         function logout() {
-            if (confirm('🤔 정말로 모험을 종료하시겠습니까?')) {
+            const confirmMsg = currentLang === 'ko' ? 
+                '🤔 정말로 모험을 종료하시겠습니까?' : 
+                '🤔 Are you sure you want to end your adventure?';
+            if (confirm(confirmMsg)) {
                 currentUser = null;
                 isAdmin = false;
                 document.getElementById('gameContainer').style.display = 'none';
@@ -1176,7 +1415,10 @@
 
         function saveGame() {
             saveData();
-            addBattleLog('💾 게임이 저장되었습니다!');
+            const saveMsg = currentLang === 'ko' ? 
+                '💾 게임이 저장되었습니다!' : 
+                '💾 Game saved!';
+            addBattleLog(saveMsg);
         }
 
         function startGame() {
@@ -1185,15 +1427,20 @@
             document.getElementById('gameContainer').style.display = 'block';
 
             const user = users[currentUser];
-            const className = classNames[user.characterClass];
+            const className = classNames[currentLang][user.characterClass];
             const classEmoji = classStats[user.characterClass].emoji;
             
-            document.getElementById('welcomeMessage').innerHTML = 
-                `환영합니다, <strong>${currentUser}</strong>님! 🌟<br>
-                ${classEmoji} ${className} (레벨 ${user.level})`;
+            const welcomeText = currentLang === 'ko' ? 
+                `환영합니다, <strong>${currentUser}</strong>님! 🌟<br>${classEmoji} ${className} (레벨 ${user.level})` :
+                `Welcome, <strong>${currentUser}</strong>! 🌟<br>${classEmoji} ${className} (Level ${user.level})`;
+            
+            document.getElementById('welcomeMessage').innerHTML = welcomeText;
             
             updateGameUI();
-            addBattleLog(`${classEmoji} ${currentUser}님이 ${className}로 모험에 참가했습니다!`);
+            const joinMsg = currentLang === 'ko' ? 
+                `${classEmoji} ${currentUser}님이 ${className}로 모험에 참가했습니다!` :
+                `${classEmoji} ${currentUser} joined the adventure as a ${className}!`;
+            addBattleLog(joinMsg);
         }
 
         function updateGameUI() {
@@ -1218,20 +1465,22 @@
             document.getElementById('mpBar').style.width = mpPercent + '%';
             document.getElementById('expBar').style.width = expPercent + '%';
 
-            saveData(); // UI 업데이트 후 저장
+            saveData();
         }
 
-        // 게임 기능들
         function hunt() {
             const user = users[currentUser];
             
             if (user.currentHP <= 0) {
-                addBattleLog('💀 체력이 0입니다! 여관에서 휴식을 취하세요.');
+                const msg = currentLang === 'ko' ? 
+                    '💀 체력이 0입니다! 여관에서 휴식을 취하세요.' :
+                    '💀 Health is 0! Rest at the inn.';
+                addBattleLog(msg);
                 return;
             }
 
-            let availableMonsters = monsters.filter(monster => {
-                if (user.level <= 3) return monster.name !== '드래곤';
+            let availableMonsters = monsters[currentLang].filter(monster => {
+                if (user.level <= 3) return monster.name !== (currentLang === 'ko' ? '드래곤' : 'Dragon');
                 return true;
             });
 
@@ -1256,13 +1505,22 @@
                 user.gold = (user.gold || 50) + goldGain;
                 user.victories = (user.victories || 0) + 1;
                 
-                addBattleLog(`⚔️ ${monster.emoji} ${monster.name}을 물리쳤습니다! (피해: ${finalPlayerDamage}) 💰+${goldGain} ⭐+${expGain}`);
+                const victoryMsg = currentLang === 'ko' ? 
+                    `⚔️ ${monster.emoji} ${monster.name}을 물리쳤습니다! (피해: ${finalPlayerDamage}) 💰+${goldGain} ⭐+${expGain}` :
+                    `⚔️ Defeated ${monster.emoji} ${monster.name}! (Damage: ${finalPlayerDamage}) 💰+${goldGain} ⭐+${expGain}`;
+                addBattleLog(victoryMsg);
                 
                 if (user.currentHP === 0) {
-                    addBattleLog(`💀 하지만 치명상을 입었습니다! 체력: 0`);
+                    const deathMsg = currentLang === 'ko' ? 
+                        `💀 하지만 치명상을 입었습니다! 체력: 0` :
+                        `💀 But you took fatal damage! Health: 0`;
+                    addBattleLog(deathMsg);
                 }
             } else {
-                addBattleLog(`💥 ${monster.emoji} ${monster.name}과의 전투에서 ${finalMonsterDamage}의 피해를 받았습니다.`);
+                const battleMsg = currentLang === 'ko' ? 
+                    `💥 ${monster.emoji} ${monster.name}과의 전투에서 ${finalMonsterDamage}의 피해를 받았습니다.` :
+                    `💥 Took ${finalMonsterDamage} damage in battle with ${monster.emoji} ${monster.name}.`;
+                addBattleLog(battleMsg);
             }
             
             checkLevelUp();
@@ -1274,7 +1532,10 @@
             const cost = 20;
             
             if ((user.gold || 50) < cost) {
-                addBattleLog('💰 골드가 부족합니다! 몬스터를 사냥해서 골드를 얻으세요.');
+                const msg = currentLang === 'ko' ? 
+                    '💰 골드가 부족합니다! 몬스터를 사냥해서 골드를 얻으세요.' :
+                    '💰 Not enough gold! Hunt monsters to earn gold.';
+                addBattleLog(msg);
                 return;
             }
             
@@ -1285,7 +1546,10 @@
             user.currentMP = Math.min(user.maxMP, user.currentMP + mpRecover);
             user.gold = Math.max(0, (user.gold || 50) - cost);
             
-            addBattleLog(`🏨 여관에서 푹 쉬었습니다! 💰-${cost} ❤️+${hpRecover} ⚡+${mpRecover}`);
+            const restMsg = currentLang === 'ko' ? 
+                `🏨 여관에서 푹 쉬었습니다! 💰-${cost} ❤️+${hpRecover} ⚡+${mpRecover}` :
+                `🏨 Rested well at the inn! 💰-${cost} ❤️+${hpRecover} ⚡+${mpRecover}`;
+            addBattleLog(restMsg);
             updateGameUI();
         }
 
@@ -1294,7 +1558,10 @@
             const mpCost = 25;
             
             if (user.currentMP < mpCost) {
-                addBattleLog('⚡ 마나가 부족합니다! 휴식을 취하거나 마나 물약을 사용하세요.');
+                const msg = currentLang === 'ko' ? 
+                    '⚡ 마나가 부족합니다! 휴식을 취하거나 마나 물약을 사용하세요.' :
+                    '⚡ Not enough mana! Rest or use a mana potion.';
+                addBattleLog(msg);
                 return;
             }
             
@@ -1303,7 +1570,10 @@
             const expGain = 20;
             user.experience += expGain;
             
-            addBattleLog(`✨ ${user.skill}을(를) 시전했습니다! 강력한 공격으로 ${damage}의 피해! ⚡-${mpCost} ⭐+${expGain}`);
+            const skillMsg = currentLang === 'ko' ? 
+                `✨ ${user.skill}을(를) 시전했습니다! 강력한 공격으로 ${damage}의 피해! ⚡-${mpCost} ⭐+${expGain}` :
+                `✨ Cast ${user.skill}! Powerful attack deals ${damage} damage! ⚡-${mpCost} ⭐+${expGain}`;
+            addBattleLog(skillMsg);
             
             checkLevelUp();
             updateGameUI();
@@ -1313,11 +1583,14 @@
             const user = users[currentUser];
             
             if (user.currentHP < 30) {
-                addBattleLog('❤️ 체력이 너무 낮습니다! 던전 탐험은 위험해요.');
+                const msg = currentLang === 'ko' ? 
+                    '❤️ 체력이 너무 낮습니다! 던전 탐험은 위험해요.' :
+                    '❤️ Health too low! Dungeon exploration is dangerous.';
+                addBattleLog(msg);
                 return;
             }
             
-            const events = [
+            const events = currentLang === 'ko' ? [
                 { name: '보물 상자 발견', effect: () => {
                     const gold = Math.floor(Math.random() * 50) + 20;
                     user.gold = (user.gold || 50) + gold;
@@ -1338,12 +1611,36 @@
                     user.experience += exp;
                     return `🏺 고대 유물을 연구해 ${exp} 경험치를 획득했습니다!`;
                 }}
+            ] : [
+                { name: 'Treasure Chest Found', effect: () => {
+                    const gold = Math.floor(Math.random() * 50) + 20;
+                    user.gold = (user.gold || 50) + gold;
+                    return `💰 Found ${gold} gold in a treasure chest!`;
+                }},
+                { name: 'Mystical Spring', effect: () => {
+                    const heal = Math.floor(user.maxHP * 0.3);
+                    user.currentHP = Math.min(user.maxHP, user.currentHP + heal);
+                    return `💧 Health restored by ${heal} from mystical spring water!`;
+                }},
+                { name: 'Trap Discovered', effect: () => {
+                    const damage = Math.floor(Math.random() * 20) + 10;
+                    user.currentHP = Math.max(0, user.currentHP - damage);
+                    return `⚠️ Triggered a trap and took ${damage} damage!`;
+                }},
+                { name: 'Ancient Artifact Found', effect: () => {
+                    const exp = Math.floor(Math.random() * 30) + 20;
+                    user.experience += exp;
+                    return `🏺 Studied ancient artifact and gained ${exp} experience!`;
+                }}
             ];
             
             const event = events[Math.floor(Math.random() * events.length)];
             const result = event.effect();
             
-            addBattleLog(`🗺️ 던전 탐험 중 ${event.name}!`);
+            const exploreMsg = currentLang === 'ko' ? 
+                `🗺️ 던전 탐험 중 ${event.name}!` :
+                `🗺️ While exploring the dungeon: ${event.name}!`;
+            addBattleLog(exploreMsg);
             addBattleLog(result);
             
             checkLevelUp();
@@ -1370,29 +1667,47 @@
                 user.currentHP = user.maxHP;
                 user.currentMP = user.maxMP;
                 
-                addBattleLog(`🎉 레벨 업! 레벨 ${user.level}이 되었습니다!`);
-                addBattleLog(`📈 능력치 증가: ❤️+${hpBonus} ⚡+${mpBonus} ⚔️+${attackBonus} 🛡️+${defenseBonus}`);
+                const levelUpMsg = currentLang === 'ko' ? 
+                    `🎉 레벨 업! 레벨 ${user.level}이 되었습니다!` :
+                    `🎉 Level Up! You are now level ${user.level}!`;
+                const statsMsg = currentLang === 'ko' ? 
+                    `📈 능력치 증가: ❤️+${hpBonus} ⚡+${mpBonus} ⚔️+${attackBonus} 🛡️+${defenseBonus}` :
+                    `📈 Stats increased: ❤️+${hpBonus} ⚡+${mpBonus} ⚔️+${attackBonus} 🛡️+${defenseBonus}`;
+                
+                addBattleLog(levelUpMsg);
+                addBattleLog(statsMsg);
             }
         }
 
         function showStats() {
             const user = users[currentUser];
-            const className = classNames[user.characterClass];
+            const className = classNames[currentLang][user.characterClass];
             const classEmoji = classStats[user.characterClass].emoji;
             
-            addBattleLog(`📊 === ${currentUser}님의 영웅 정보 ===`);
-            addBattleLog(`${classEmoji} 직업: ${className} | 🌟 레벨: ${user.level}`);
-            addBattleLog(`❤️ 체력: ${user.currentHP}/${user.maxHP} | ⚡ 마나: ${user.currentMP}/${user.maxMP}`);
-            addBattleLog(`⚔️ 공격력: ${user.attack} | 🛡️ 방어력: ${user.defense}`);
-            addBattleLog(`⭐ 경험치: ${user.experience}/${user.level * 100} | 💰 골드: ${user.gold || 50}`);
-            addBattleLog(`🏆 승리 횟수: ${user.victories || 0} | ✨ 특수기: ${user.skill}`);
+            if (currentLang === 'ko') {
+                addBattleLog(`📊 === ${currentUser}님의 영웅 정보 ===`);
+                addBattleLog(`${classEmoji} 직업: ${className} | 🌟 레벨: ${user.level}`);
+                addBattleLog(`❤️ 체력: ${user.currentHP}/${user.maxHP} | ⚡ 마나: ${user.currentMP}/${user.maxMP}`);
+                addBattleLog(`⚔️ 공격력: ${user.attack} | 🛡️ 방어력: ${user.defense}`);
+                addBattleLog(`⭐ 경험치: ${user.experience}/${user.level * 100} | 💰 골드: ${user.gold || 50}`);
+                addBattleLog(`🏆 승리 횟수: ${user.victories || 0} | ✨ 특수기: ${user.skill}`);
+            } else {
+                addBattleLog(`📊 === ${currentUser}'s Hero Information ===`);
+                addBattleLog(`${classEmoji} Class: ${className} | 🌟 Level: ${user.level}`);
+                addBattleLog(`❤️ Health: ${user.currentHP}/${user.maxHP} | ⚡ Mana: ${user.currentMP}/${user.maxMP}`);
+                addBattleLog(`⚔️ Attack: ${user.attack} | 🛡️ Defense: ${user.defense}`);
+                addBattleLog(`⭐ Experience: ${user.experience}/${user.level * 100} | 💰 Gold: ${user.gold || 50}`);
+                addBattleLog(`🏆 Victories: ${user.victories || 0} | ✨ Special Skill: ${user.skill}`);
+            }
             
             if (user.inventory && user.inventory.length > 0) {
-                addBattleLog(`🎒 보유 장비: ${user.inventory.length}개`);
+                const equipMsg = currentLang === 'ko' ? 
+                    `🎒 보유 장비: ${user.inventory.length}개` :
+                    `🎒 Equipment owned: ${user.inventory.length} items`;
+                addBattleLog(equipMsg);
             }
         }
 
-        // 상점 기능
         function openShop() {
             const user = users[currentUser];
             document.getElementById('shopModal').style.display = 'block';
@@ -1401,26 +1716,33 @@
             const shopContainer = document.getElementById('shopItems');
             shopContainer.innerHTML = '';
             
-            shopItems.forEach(item => {
+            const currentShopItems = shopItems[currentLang];
+            
+            currentShopItems.forEach(item => {
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'shop-item';
                 
                 const canAfford = (user.gold || 50) >= item.price;
+                const buyText = currentLang === 'ko' ? '구매하기' : 'Buy';
+                const noGoldText = currentLang === 'ko' ? '골드 부족' : 'Not enough gold';
                 
                 itemDiv.innerHTML = `
                     <div class="item-icon">${item.emoji}</div>
                     <div class="item-name">${item.name}</div>
                     <div class="item-description">${item.description}</div>
-                    <div class="item-price">💰 ${item.price} 골드</div>
+                    <div class="item-price">${currentLang === 'ko' ? '💰 ' + item.price + ' 골드' : '💰 ' + item.price + ' Gold'}</div>
                     <button class="buy-btn" onclick="buyItem('${item.id}')" ${!canAfford ? 'disabled' : ''}>
-                        ${canAfford ? '구매하기' : '골드 부족'}
+                        ${canAfford ? buyText : noGoldText}
                     </button>
                 `;
                 
                 shopContainer.appendChild(itemDiv);
             });
             
-            addBattleLog('🏪 신비한 상점에 입장했습니다! 필요한 아이템을 선택해보세요.');
+            const shopMsg = currentLang === 'ko' ? 
+                '🏪 신비한 상점에 입장했습니다! 필요한 아이템을 선택해보세요.' :
+                '🏪 Entered the mysterious shop! Select the items you need.';
+            addBattleLog(shopMsg);
         }
 
         function closeShop() {
@@ -1429,15 +1751,22 @@
 
         function buyItem(itemId) {
             const user = users[currentUser];
-            const item = shopItems.find(i => i.id === itemId);
+            const currentShopItems = shopItems[currentLang];
+            const item = currentShopItems.find(i => i.id === itemId);
             
             if (!item) {
-                addBattleLog('❌ 아이템을 찾을 수 없습니다!');
+                const errorMsg = currentLang === 'ko' ? 
+                    '❌ 아이템을 찾을 수 없습니다!' :
+                    '❌ Item not found!';
+                addBattleLog(errorMsg);
                 return;
             }
             
             if ((user.gold || 50) < item.price) {
-                addBattleLog(`💰 골드가 부족합니다! ${item.name} 가격: ${item.price} (보유: ${user.gold || 50})`);
+                const errorMsg = currentLang === 'ko' ? 
+                    `💰 골드가 부족합니다! ${item.name} 가격: ${item.price} (보유: ${user.gold || 50})` :
+                    `💰 Not enough gold! ${item.name} price: ${item.price} (owned: ${user.gold || 50})`;
+                addBattleLog(errorMsg);
                 return;
             }
             
@@ -1457,7 +1786,10 @@
                 });
             }
             
-            addBattleLog(`🛒 ${item.name}을(를) 구매했습니다! 💰-${item.price}`);
+            const purchaseMsg = currentLang === 'ko' ? 
+                `🛒 ${item.name}을(를) 구매했습니다! 💰-${item.price}` :
+                `🛒 Purchased ${item.name}! 💰-${item.price}`;
+            addBattleLog(purchaseMsg);
             addBattleLog(result);
             
             checkLevelUp();
@@ -1468,7 +1800,6 @@
             }, 100);
         }
 
-        // 인벤토리 기능
         function openInventory() {
             const user = users[currentUser];
             if (!user.inventory) user.inventory = [];
@@ -1480,11 +1811,14 @@
             inventoryContainer.innerHTML = '';
             
             if (user.inventory.length === 0) {
+                const emptyMsg = currentLang === 'ko' ? 
+                    '인벤토리가 비어있습니다!<br>상점에서 아이템을 구매해보세요.' :
+                    'Inventory is empty!<br>Purchase items from the shop.';
+                
                 inventoryContainer.innerHTML = `
                     <div style="text-align: center; color: rgba(255,255,255,0.6); padding: 40px;">
                         <div style="font-size: 3em; margin-bottom: 20px;">📦</div>
-                        <p>인벤토리가 비어있습니다!</p>
-                        <p>상점에서 아이템을 구매해보세요.</p>
+                        <p>${emptyMsg}</p>
                     </div>
                 `;
                 return;
@@ -1494,24 +1828,29 @@
                 const itemDiv = document.createElement('div');
                 itemDiv.className = 'inventory-item';
                 
-                const purchaseDate = new Date(item.purchaseDate || Date.now()).toLocaleDateString('ko-KR');
+                const purchaseDate = new Date(item.purchaseDate || Date.now()).toLocaleDateString(currentLang === 'ko' ? 'ko-KR' : 'en-US');
+                const purchaseDateLabel = currentLang === 'ko' ? '구매일: ' : 'Purchased: ';
+                const sellText = currentLang === 'ko' ? '💰 판매하기' : '💰 Sell';
                 
                 itemDiv.innerHTML = `
                     <div class="item-icon">${item.emoji}</div>
                     <div class="item-name">${item.name}</div>
                     <div class="item-description">${item.description}</div>
                     <div style="font-size: 0.8em; color: rgba(255,255,255,0.5); text-align: center; margin: 10px 0;">
-                        구매일: ${purchaseDate}
+                        ${purchaseDateLabel}${purchaseDate}
                     </div>
                     <button class="use-btn" onclick="sellItem(${index})">
-                        💰 판매하기
+                        ${sellText}
                     </button>
                 `;
                 
                 inventoryContainer.appendChild(itemDiv);
             });
             
-            addBattleLog('🎒 인벤토리를 열었습니다! 보유 중인 장비를 확인해보세요.');
+            const inventoryMsg = currentLang === 'ko' ? 
+                '🎒 인벤토리를 열었습니다! 보유 중인 장비를 확인해보세요.' :
+                '🎒 Opened inventory! Check your owned equipment.';
+            addBattleLog(inventoryMsg);
         }
 
         function closeInventory() {
@@ -1523,15 +1862,18 @@
             if (!user.inventory[index]) return;
             
             const item = user.inventory[index];
-            const sellPrice = Math.floor(Math.random() * 20) + 10; // 랜덤 판매가
+            const sellPrice = Math.floor(Math.random() * 20) + 10;
             
             user.gold = (user.gold || 50) + sellPrice;
             user.inventory.splice(index, 1);
             
-            addBattleLog(`💰 ${item.name}을(를) ${sellPrice} 골드에 판매했습니다!`);
+            const sellMsg = currentLang === 'ko' ? 
+                `💰 ${item.name}을(를) ${sellPrice} 골드에 판매했습니다!` :
+                `💰 Sold ${item.name} for ${sellPrice} gold!`;
+            addBattleLog(sellMsg);
             
             updateGameUI();
-            openInventory(); // 인벤토리 새로고침
+            openInventory();
         }
 
         // 관리자 기능
@@ -1551,9 +1893,15 @@
                 isAdmin = true;
                 closeAdminLogin();
                 openAdminPanel();
-                addBattleLog('🔧 관리자 권한으로 로그인했습니다!');
+                const adminMsg = currentLang === 'ko' ? 
+                    '🔧 관리자 권한으로 로그인했습니다!' :
+                    '🔧 Logged in with administrator privileges!';
+                addBattleLog(adminMsg);
             } else {
-                showError('adminLoginError', '잘못된 관리자 정보입니다!');
+                const errorMsg = currentLang === 'ko' ? 
+                    '잘못된 관리자 정보입니다!' :
+                    'Invalid administrator credentials!';
+                showError('adminLoginError', errorMsg);
             }
         }
 
@@ -1590,21 +1938,49 @@
                 const userCard = document.createElement('div');
                 userCard.className = 'user-card';
                 
-                const lastLogin = new Date(userData.lastLogin || userData.createdAt).toLocaleString('ko-KR');
-                const className = classNames[userData.characterClass];
+                const lastLogin = new Date(userData.lastLogin || userData.createdAt).toLocaleString(currentLang === 'ko' ? 'ko-KR' : 'en-US');
+                const className = classNames[currentLang][userData.characterClass];
                 const classEmoji = classStats[userData.characterClass].emoji;
+
+                const cardLabels = currentLang === 'ko' ? {
+                    class: '직업:',
+                    level: '레벨:',
+                    gold: '골드:',
+                    health: '체력:',
+                    victories: '승리:',
+                    lastAccess: '마지막 접속:'
+                } : {
+                    class: 'Class:',
+                    level: 'Level:',
+                    gold: 'Gold:',
+                    health: 'Health:',
+                    victories: 'Victories:',
+                    lastAccess: 'Last Access:'
+                };
+
+                const adminButtons = currentLang === 'ko' ? {
+                    heal: '💚 회복',
+                    gold: '💰 골드',
+                    exp: '⭐ 경험치',
+                    reset: '🔄 초기화'
+                } : {
+                    heal: '💚 Heal',
+                    gold: '💰 Gold',
+                    exp: '⭐ Exp',
+                    reset: '🔄 Reset'
+                };
 
                 userCard.innerHTML = `
                     <h4 style="color: #ffd700; margin-bottom: 10px;">${classEmoji} ${username}</h4>
-                    <p><strong>직업:</strong> ${className}</p>
-                    <p><strong>레벨:</strong> ${userData.level} | <strong>골드:</strong> ${userData.gold || 50}</p>
-                    <p><strong>체력:</strong> ${userData.currentHP}/${userData.maxHP} | <strong>승리:</strong> ${userData.victories || 0}</p>
-                    <p style="font-size: 0.8em; color: rgba(255,255,255,0.6);">마지막 접속: ${lastLogin}</p>
+                    <p><strong>${cardLabels.class}</strong> ${className}</p>
+                    <p><strong>${cardLabels.level}</strong> ${userData.level} | <strong>${cardLabels.gold}</strong> ${userData.gold || 50}</p>
+                    <p><strong>${cardLabels.health}</strong> ${userData.currentHP}/${userData.maxHP} | <strong>${cardLabels.victories}</strong> ${userData.victories || 0}</p>
+                    <p style="font-size: 0.8em; color: rgba(255,255,255,0.6);">${cardLabels.lastAccess} ${lastLogin}</p>
                     <div class="admin-actions">
-                        <button class="admin-btn btn-success" onclick="healUser('${username}')">💚 회복</button>
-                        <button class="admin-btn btn-primary" onclick="giveGoldToUser('${username}', 100)">💰 골드</button>
-                        <button class="admin-btn btn-secondary" onclick="giveExpToUser('${username}', 50)">⭐ 경험치</button>
-                        <button class="admin-btn btn-danger" onclick="resetUser('${username}')">🔄 초기화</button>
+                        <button class="admin-btn btn-success" onclick="healUser('${username}')">${adminButtons.heal}</button>
+                        <button class="admin-btn btn-primary" onclick="giveGoldToUser('${username}', 100)">${adminButtons.gold}</button>
+                        <button class="admin-btn btn-secondary" onclick="giveExpToUser('${username}', 50)">${adminButtons.exp}</button>
+                        <button class="admin-btn btn-danger" onclick="resetUser('${username}')">${adminButtons.reset}</button>
                     </div>
                 `;
 
@@ -1615,14 +1991,17 @@
         function sendGlobalNotice() {
             const notice = document.getElementById('noticeText').value.trim();
             if (!notice) {
-                alert('공지사항을 입력해주세요!');
+                const alertMsg = currentLang === 'ko' ? '공지사항을 입력해주세요!' : 'Please enter a notice!';
+                alert(alertMsg);
                 return;
             }
 
-            // 모든 사용자에게 공지사항 추가 (실제로는 현재 로그인한 사용자에게만 표시)
-            addBattleLog(`📢 [관리자 공지] ${notice}`);
+            const noticePrefix = currentLang === 'ko' ? '[관리자 공지]' : '[Admin Notice]';
+            addBattleLog(`📢 ${noticePrefix} ${notice}`);
             document.getElementById('noticeText').value = '';
-            alert('전체 공지사항이 전송되었습니다!');
+            
+            const successMsg = currentLang === 'ko' ? '전체 공지사항이 전송되었습니다!' : 'Global notice has been sent!';
+            alert(successMsg);
         }
 
         function giveItem() {
@@ -1631,34 +2010,50 @@
             const amount = parseInt(document.getElementById('giftAmount').value);
 
             if (!targetUser || !users[targetUser]) {
-                alert('존재하지 않는 사용자입니다!');
+                const errorMsg = currentLang === 'ko' ? '존재하지 않는 사용자입니다!' : 'User does not exist!';
+                alert(errorMsg);
                 return;
             }
 
             if (!amount || amount < 1) {
-                alert('올바른 수량을 입력해주세요!');
+                const errorMsg = currentLang === 'ko' ? '올바른 수량을 입력해주세요!' : 'Please enter a valid quantity!';
+                alert(errorMsg);
                 return;
             }
 
             const user = users[targetUser];
             let message = '';
 
+            const giftMessages = currentLang === 'ko' ? {
+                gold: `💰 ${amount} 골드 지급`,
+                exp: `⭐ ${amount} 경험치 지급`,
+                hp: `❤️ ${amount} 체력 회복`,
+                mp: `⚡ ${amount} 마나 회복`,
+                level: `🌟 ${amount} 레벨 증가`
+            } : {
+                gold: `💰 ${amount} gold given`,
+                exp: `⭐ ${amount} experience given`,
+                hp: `❤️ ${amount} health restored`,
+                mp: `⚡ ${amount} mana restored`,
+                level: `🌟 ${amount} level increased`
+            };
+
             switch(giftType) {
                 case 'gold':
                     user.gold = (user.gold || 50) + amount;
-                    message = `💰 ${amount} 골드 지급`;
+                    message = giftMessages.gold;
                     break;
                 case 'exp':
                     user.experience += amount;
-                    message = `⭐ ${amount} 경험치 지급`;
+                    message = giftMessages.exp;
                     break;
                 case 'hp':
                     user.currentHP = Math.min(user.maxHP, user.currentHP + amount);
-                    message = `❤️ ${amount} 체력 회복`;
+                    message = giftMessages.hp;
                     break;
                 case 'mp':
                     user.currentMP = Math.min(user.maxMP, user.currentMP + amount);
-                    message = `⚡ ${amount} 마나 회복`;
+                    message = giftMessages.mp;
                     break;
                 case 'level':
                     user.level += amount;
@@ -1666,24 +2061,29 @@
                     user.maxMP += amount * 15;
                     user.attack += amount * 5;
                     user.defense += amount * 3;
-                    message = `🌟 ${amount} 레벨 증가`;
+                    message = giftMessages.level;
                     break;
             }
 
             saveData();
             
             if (targetUser === currentUser) {
-                addBattleLog(`🎁 관리자가 ${message}을(를) 지급했습니다!`);
+                const adminGiftMsg = currentLang === 'ko' ? 
+                    `🎁 관리자가 ${message}을(를) 지급했습니다!` :
+                    `🎁 Administrator gave ${message}!`;
+                addBattleLog(adminGiftMsg);
                 updateGameUI();
             }
 
-            alert(`${targetUser}님에게 ${message}을(를) 지급했습니다!`);
+            const successMsg = currentLang === 'ko' ? 
+                `${targetUser}님에게 ${message}을(를) 지급했습니다!` :
+                `Gave ${message} to ${targetUser}!`;
+            alert(successMsg);
             document.getElementById('giftUsername').value = '';
             document.getElementById('giftAmount').value = '';
             loadUserList();
         }
 
-        // 관리자 개별 유저 관리 기능
         function healUser(username) {
             const user = users[username];
             user.currentHP = user.maxHP;
@@ -1691,11 +2091,17 @@
             saveData();
             
             if (username === currentUser) {
-                addBattleLog('💚 관리자가 당신을 완전히 회복시켰습니다!');
+                const healMsg = currentLang === 'ko' ? 
+                    '💚 관리자가 당신을 완전히 회복시켰습니다!' :
+                    '💚 Administrator fully healed you!';
+                addBattleLog(healMsg);
                 updateGameUI();
             }
             
-            alert(`${username}님을 완전히 회복시켰습니다!`);
+            const alertMsg = currentLang === 'ko' ? 
+                `${username}님을 완전히 회복시켰습니다!` :
+                `Fully healed ${username}!`;
+            alert(alertMsg);
             loadUserList();
         }
 
@@ -1705,11 +2111,17 @@
             saveData();
             
             if (username === currentUser) {
-                addBattleLog(`💰 관리자가 ${amount} 골드를 지급했습니다!`);
+                const goldMsg = currentLang === 'ko' ? 
+                    `💰 관리자가 ${amount} 골드를 지급했습니다!` :
+                    `💰 Administrator gave ${amount} gold!`;
+                addBattleLog(goldMsg);
                 updateGameUI();
             }
             
-            alert(`${username}님에게 ${amount} 골드를 지급했습니다!`);
+            const alertMsg = currentLang === 'ko' ? 
+                `${username}님에게 ${amount} 골드를 지급했습니다!` :
+                `Gave ${amount} gold to ${username}!`;
+            alert(alertMsg);
             loadUserList();
         }
 
@@ -1719,24 +2131,32 @@
             saveData();
             
             if (username === currentUser) {
-                addBattleLog(`⭐ 관리자가 ${amount} 경험치를 지급했습니다!`);
+                const expMsg = currentLang === 'ko' ? 
+                    `⭐ 관리자가 ${amount} 경험치를 지급했습니다!` :
+                    `⭐ Administrator gave ${amount} experience!`;
+                addBattleLog(expMsg);
                 checkLevelUp();
                 updateGameUI();
             }
             
-            alert(`${username}님에게 ${amount} 경험치를 지급했습니다!`);
+            const alertMsg = currentLang === 'ko' ? 
+                `${username}님에게 ${amount} 경험치를 지급했습니다!` :
+                `Gave ${amount} experience to ${username}!`;
+            alert(alertMsg);
             loadUserList();
         }
 
         function resetUser(username) {
-            if (!confirm(`정말로 ${username}님의 데이터를 초기화하시겠습니까?`)) {
+            const confirmMsg = currentLang === 'ko' ? 
+                `정말로 ${username}님의 데이터를 초기화하시겠습니까?` :
+                `Are you sure you want to reset ${username}'s data?`;
+            if (!confirm(confirmMsg)) {
                 return;
             }
             
             const user = users[username];
             const baseStats = classStats[user.characterClass];
             
-            // 기본값으로 초기화 (직업과 비밀번호는 유지)
             user.level = 1;
             user.experience = 0;
             user.maxHP = baseStats.hp;
@@ -1752,124 +2172,20 @@
             saveData();
             
             if (username === currentUser) {
-                addBattleLog('🔄 관리자가 당신의 데이터를 초기화했습니다!');
+                const resetMsg = currentLang === 'ko' ? 
+                    '🔄 관리자가 당신의 데이터를 초기화했습니다!' :
+                    '🔄 Administrator reset your data!';
+                addBattleLog(resetMsg);
                 updateGameUI();
             }
             
-            alert(`${username}님의 데이터를 초기화했습니다!`);
+            const alertMsg = currentLang === 'ko' ? 
+                `${username}님의 데이터를 초기화했습니다!` :
+                `Reset ${username}'s data!`;
+            alert(alertMsg);
             loadUserList();
         }
 
-        // Discord 인증 기능 추가
-        function connectDiscord() {
-            // Discord OAuth2 연동 (실제 구현시에는 Discord API 키가 필요)
-            const discordAuthUrl = 'https://discord.com/oauth2/authorize?' + 
-                'client_id=YOUR_DISCORD_CLIENT_ID&' +
-                'redirect_uri=YOUR_REDIRECT_URI&' +
-                'response_type=code&' +
-                'scope=identify';
-            
-            // 실제 환경에서는 Discord 인증 창을 엽니다
-            // window.open(discordAuthUrl, 'discord_auth', 'width=500,height=700');
-            
-            // 데모용으로 가상 인증 처리
-            setTimeout(() => {
-                const user = users[currentUser];
-                if (!user.discordConnected) {
-                    user.discordConnected = true;
-                    user.discordUsername = `${currentUser}#${Math.floor(Math.random() * 10000).toString().padStart(4, '0')}`;
-                    user.discordVerificationRewards = {
-                        goldBonus: 200,
-                        expBonus: 100,
-                        specialItem: 'discord_crown'
-                    };
-                    
-                    // 인증 보상 지급
-                    user.gold = (user.gold || 50) + 200;
-                    user.experience += 100;
-                    
-                    if (!user.inventory) user.inventory = [];
-                    user.inventory.push({
-                        id: 'discord_crown',
-                        name: 'Discord 왕관',
-                        emoji: '👑',
-                        description: 'Discord 인증 완료 기념품! 특별한 힘이 깃들어 있습니다.',
-                        category: 'special',
-                        purchaseDate: Date.now()
-                    });
-                    
-                    saveData();
-                    updateGameUI();
-                    
-                    addBattleLog('🎉 Discord 계정 인증이 완료되었습니다!');
-                    addBattleLog('🎁 인증 보상: 💰+200골드, ⭐+100경험치, 👑Discord 왕관');
-                    addBattleLog(`📱 Discord: ${user.discordUsername}`);
-                    
-                    alert(`Discord 인증 완료!\n보상: 골드 200, 경험치 100, 특별 아이템\nDiscord: ${user.discordUsername}`);
-                } else {
-                    alert('이미 Discord 계정이 연동되어 있습니다!');
-                }
-            }, 1000);
-        }
-
-        // Discord 서버 참여 보상
-        function joinDiscordServer() {
-            const user = users[currentUser];
-            const serverUrl = 'https://discord.gg/y9EhqTEyh7';
-            
-            if (!user.discordServerJoined) {
-                // 서버 참여 확인 (실제로는 Discord API로 확인)
-                if (confirm('Discord 서버에 참여하시겠습니까?\n참여 후 특별 보상을 받을 수 있습니다!')) {
-                    window.open(serverUrl, '_blank');
-                    
-                    // 데모용 보상 (실제로는 서버 참여 확인 후 지급)
-                    setTimeout(() => {
-                        if (confirm('Discord 서버에 참여하셨나요?\n(참여 완료 시 "확인"을 클릭하세요)')) {
-                            user.discordServerJoined = true;
-                            user.gold = (user.gold || 50) + 150;
-                            user.experience += 75;
-                            
-                            if (!user.inventory) user.inventory = [];
-                            user.inventory.push({
-                                id: 'community_badge',
-                                name: '커뮤니티 뱃지',
-                                emoji: '🏅',
-                                description: 'Discord 서버 참여 기념 뱃지! 커뮤니티 멤버의 증표입니다.',
-                                category: 'special',
-                                purchaseDate: Date.now()
-                            });
-                            
-                            saveData();
-                            updateGameUI();
-                            
-                            addBattleLog('🏅 Discord 서버 참여가 확인되었습니다!');
-                            addBattleLog('🎁 서버 참여 보상: 💰+150골드, ⭐+75경험치, 🏅커뮤니티 뱃지');
-                            
-                            alert('Discord 서버 참여 보상을 받았습니다!\n골드 150, 경험치 75, 커뮤니티 뱃지');
-                        }
-                    }, 3000);
-                }
-            } else {
-                window.open(serverUrl, '_blank');
-                addBattleLog('💬 Discord 서버로 이동합니다!');
-            }
-        }
-
-        // Discord 관련 UI 업데이트
-        function updateDiscordStatus() {
-            const user = users[currentUser];
-            if (user && user.discordConnected) {
-                const discordButtons = document.querySelectorAll('.btn-discord');
-                discordButtons.forEach(btn => {
-                    if (btn.textContent.includes('Discord 커뮤니티')) {
-                        btn.innerHTML = '💬 Discord 서버 (인증됨)';
-                        btn.onclick = joinDiscordServer;
-                    }
-                });
-            }
-        }
-
-        // 모든 모달 닫기
         function closeAllModals() {
             document.getElementById('shopModal').style.display = 'none';
             document.getElementById('inventoryModal').style.display = 'none';
@@ -1936,22 +2252,33 @@
         setInterval(() => {
             if (currentUser && users[currentUser]) {
                 saveData();
-                console.log('게임 자동 저장됨');
             }
         }, 30000);
 
-        // Discord 연동 버튼을 기존 Discord 버튼에 추가
+        // 초기 로드 시 언어 설정
         document.addEventListener('DOMContentLoaded', function() {
-            // 페이지 로드 시 저장된 데이터 확인
+            const savedLang = localStorage.getItem('rpgLang') || 'ko';
+            currentLang = savedLang;
+            
+            document.querySelectorAll('.lang-btn').forEach(btn => {
+                btn.classList.remove('active');
+                if ((savedLang === 'en' && btn.textContent === '🇺🇸') || 
+                    (savedLang === 'ko' && btn.textContent === '🇰🇷')) {
+                    btn.classList.add('active');
+                }
+            });
+            
+            updateLanguage();
+            
             if (Object.keys(users).length > 0) {
-                console.log(`저장된 사용자 ${Object.keys(users).length}명 로드됨`);
+                console.log(`Loaded ${Object.keys(users).length} saved users`);
             }
         });
 
-        // 초기화 메시지
-        console.log('🎮 RPG 어드벤처 게임 (향상된 버전)이 로드되었습니다!');
-        console.log('💾 데이터는 브라우저에 자동 저장됩니다.');
-        console.log('🔧 관리자 계정: admin / rpg2024!');
+        console.log('🎮 Multilingual RPG Adventure Game loaded!');
+        console.log('💾 Data is automatically saved to browser storage.');
+        console.log('🌐 Language switching available (Korean/English)');
+        console.log('🔧 Admin account: gaon / 14gmc1jrwdxy5');
     </script>
 </body>
 </html>
